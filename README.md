@@ -10,11 +10,14 @@ This project will help us learn how new solutions to solve this greater data pro
 * User can write, read, and delete files
     * No text editing capabilities in our service
 * Just make CLI tools for now (python client)
+    * python2 urllib2 library to send http requests
+* Takes in user, secret key, path/to/file
 
 ## Intermediate Service - RenoService
 * User's front end interacts with this service
 * This service conducts all logic to assemble and break up files and sends them to their corresponding servers
 * RenoService will have it's own table that saves filenames, users attributed to file, and file sizes 
+    * Use guava MultiMap
 
 ### Operations
 * Write
@@ -36,6 +39,12 @@ This project will help us learn how new solutions to solve this greater data pro
 	* Secret key
     * Output
 	* Void
+* List Files
+    * Parameters
+	* Void
+    * Output
+	* List of filenames
+    * Must match user with files
 
 ### Dissassembly scheme
 * Break up the file into k blocks of size N bytes
