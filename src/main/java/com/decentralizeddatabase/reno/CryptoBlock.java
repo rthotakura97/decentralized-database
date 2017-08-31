@@ -9,34 +9,39 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
-/*Initialize and use this class to deal with block encryption and decryption*/
 public class CryptoBlock {
 
-    private Cipher cipher;
+    private final Cipher cipher;
 
     public CryptoBlock() throws NoSuchPaddingException, NoSuchAlgorithmException {
         this.cipher = Cipher.getInstance("AES");
     }
 
-    /*
-        Inputs: String (data block), String (16 byte secret key)
-        Outputs: byte[] (encrypted data block)
+    /**
+     *  Inputs: byte[] (data block), String (16 byte secret key)
+     *  Outputs: byte[] (encrypted data block)
      */
-    public byte[] encrypt(String block, String key) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+    public byte[] encrypt(final byte[] block, final String key) throws NoSuchPaddingException, 
+							   NoSuchAlgorithmException, 
+							   InvalidKeyException, 
+							   BadPaddingException, 
+							   IllegalBlockSizeException {
+        final Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
         cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-        byte[] encrypted = cipher.doFinal(block.getBytes());
+        final byte[] encrypted = cipher.doFinal(block);
         return encrypted;
     }
 
-    /*
-        Inputs: byte[] (encrypted data block), String (16 byte secret key)
-        Outputs: String (decrypted data block)
+    /**
+     *   Inputs: byte[] (encrypted data block), String (16 byte secret key)
+     *   Outputs: byte[] (decrypted data block)
      */
-    public String decrypt(byte[] block, String key) throws InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+    public byte[] decrypt(final byte[] block, final String key) throws InvalidKeyException, 
+							   BadPaddingException, 
+							   IllegalBlockSizeException {
+        final Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
         cipher.init(Cipher.DECRYPT_MODE, aesKey);
-        String decrypted = new String(cipher.doFinal(block));
+        final byte[] decrypted = cipher.doFinal(block);
         return decrypted;
     }
 }
