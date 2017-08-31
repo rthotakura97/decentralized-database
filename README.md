@@ -1,9 +1,10 @@
 # decentralized-database
 
 ## Abstract
-In today's world we are using more and more data at levels we couldln't predict 15 years ago.
+In today's world we are using more and more data at levels we couldn't predict 15 years ago.
 This comes with the need to find better solutions to save our data safely, securely, and efficiently.
-This project will help us learn how new solutions to solve this greater data problem work.
+This project will help us learn new solutions to solve this greater problem. We are proposing a decentralized
+database that safely and securely encrypts broken up files and stores the pieces on different servers.
 
 ## Front End High Level
 * User can see a list of all their files saved on our database
@@ -11,6 +12,7 @@ This project will help us learn how new solutions to solve this greater data pro
     * No text editing capabilities in our service
 * Just make CLI tools for now (python client)
     * python2 urllib2 library to send http requests
+    * python2 flask library to set up user interface
 * Takes in user, secret key, path/to/file
 
 ## Intermediate Service - RenoService
@@ -22,29 +24,29 @@ This project will help us learn how new solutions to solve this greater data pro
 ### Operations
 * Write
     * Parameters
-	* File
-	* Filename
-	* Secret key
+	    * File
+	    * Filename
+	    * Secret key
     * Output
-	* Void
+	    * Void
 * Read
     * Parameters
-	* Filename
-	* Secret key
+	    * Filename
+	    * Secret key
     * Output
-	* File
+	    * File
 * Delete
     * Parameters
-	* Filename
-	* Secret key
+	    * Filename
+	    * Secret key
     * Output
-	* Void
+	    * Void
 * List Files
     * Parameters
-	* Void
+	    * Void
     * Output
-	* List of filenames
-    * Must match user with files
+	    * List of filenames
+        * Must match user with files
 
 ### Dissassembly scheme
 * Break up the file into k blocks of size N bytes
@@ -58,7 +60,10 @@ This project will help us learn how new solutions to solve this greater data pro
     * The block number is different than block order (i.e. they go 0, 1, 2, ..., k-1)
 * Send those blocks to different servers randomly
 * Save the blocks into hashmaps
-    * TODO: Why hashmaps?
+    * Why hashmaps?
+        * 0(1) access time
+        * Multi-dimensional data storage
+        * Easy way to store data
 
 
 ### Assembly scheme
@@ -77,24 +82,24 @@ This project will help us learn how new solutions to solve this greater data pro
 ### Operations
 * Write
     * Parameters
-	* Set of hashed keys
-	* List of encrypted blocks
-	    * NOTE - These lists aren't assumed to be in order (i.e. keys[0] doesn't need to correspond to blocks[0])
+	    * Set of hashed keys
+	    * List of encrypted blocks
+	        * NOTE - These lists aren't assumed to be in order (i.e. keys[0] doesn't need to correspond to blocks[0])
     * Output
-	* Void
+	    * Void
     * Save a block with a unique key into the hashmap
 * Read
     * Parameters
-	* Set of hashed keys
+	    * Set of hashed keys
     * Output
-	* List of encrypted blocks
+	    * List of encrypted blocks
     * Go through all keys and get as many blocks as possible
 	* keys.size() should NOT equal blocks.size()
 * Delete
     * Parameters
-	* Set of hashed keys
+	    * Set of hashed keys
     * Output
-	* Void
+	    * Void
     * Go through all keys and remove those entries
 	* Not all entries will exist
 
