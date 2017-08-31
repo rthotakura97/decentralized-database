@@ -39,19 +39,12 @@ public class DecentralizedDDB extends AbstractHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        /*final Server server = new Server(PORT);
+        final Server server = new Server(PORT);
         DecentralizedDDB ddb = new DecentralizedDDB("Hello");
-        server.setHandler(ddb);*/
+        server.setHandler(ddb);
 
-        CryptoBlock crypt = new CryptoBlock();
-
-        byte[] encrypted = crypt.encrypt("Hello", "privatekey123456");
-        System.out.println(encrypted);
-        String decrypted = crypt.decrypt(encrypted, "privatekey123456");
-        System.out.println(decrypted);
-
-        //server.start();
-        //server.join();
+        server.start();
+        server.join();
     }
 }
 
