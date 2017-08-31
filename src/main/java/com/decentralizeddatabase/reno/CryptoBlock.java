@@ -18,7 +18,7 @@ public class CryptoBlock {
     }
 
     /**
-     *  Inputs: String (data block), String (16 byte secret key)
+     *  Inputs: byte[] (data block), String (16 byte secret key)
      *  Outputs: byte[] (encrypted data block)
      */
     public byte[] encrypt(final byte[] block, final String key) throws NoSuchPaddingException, 
@@ -34,14 +34,14 @@ public class CryptoBlock {
 
     /**
      *   Inputs: byte[] (encrypted data block), String (16 byte secret key)
-     *   Outputs: String (decrypted data block)
+     *   Outputs: byte[] (decrypted data block)
      */
-    public String decrypt(final byte[] block, final String key) throws InvalidKeyException, 
+    public byte[] decrypt(final byte[] block, final String key) throws InvalidKeyException, 
 							   BadPaddingException, 
 							   IllegalBlockSizeException {
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
+        final Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
         cipher.init(Cipher.DECRYPT_MODE, aesKey);
-        String decrypted = new String(cipher.doFinal(block));
+        final byte[] decrypted = cipher.doFinal(block);
         return decrypted;
     }
 }
