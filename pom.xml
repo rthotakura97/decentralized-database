@@ -26,7 +26,28 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
         </dependency>
+
+	<dependency>
+	    <groupId>org.eclipse.jetty</groupId>
+	    <artifactId>jetty-server</artifactId>
+	    <version>9.4.6.v20170531</version>
+	</dependency>
     </dependencies>
 
+    <build>
+	<plugins>
+	    <plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>exec-maven-plugin</artifactId>
+		<version>1.1</version>
+		<executions>
+		    <execution><goals><goal>java</goal></goals></execution>
+		</executions>
+		<configuration>
+		    <mainClass>com.decentralizeddatabase.DecentralizedDDB</mainClass>
+		</configuration>
+	    </plugin>
+	</plugins>
+    </build>
     
 </project>
