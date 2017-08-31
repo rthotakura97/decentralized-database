@@ -1,4 +1,4 @@
-package com.example.decentralizeddatabase;
+package com.decentralizeddatabase;
 
 public class Main {
     public static void main(String[] args){
