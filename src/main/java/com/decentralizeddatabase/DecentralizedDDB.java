@@ -10,6 +10,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 
 import com.decentralizeddatabase.reno.CryptoBlock;
+import com.decentralizeddatabase.reno.Hasher;
 import com.sun.java.swing.plaf.windows.WindowsTreeUI;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
