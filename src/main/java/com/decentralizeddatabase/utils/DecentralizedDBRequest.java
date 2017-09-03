@@ -1,14 +1,16 @@
-package com.decentralizeddatabase;
+package com.decentralizeddatabase.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Strings;
+
 public class DecentralizedDBRequest {
 
-    private static final METHOD = "method";
-    private static final USER = "decentralized-db-user";
-    private static final SECRET = "secret-key";
-    private static final FILENAME = "filename";
-    private static final FILE = "file";
+    private static final String METHOD = "method";
+    private static final String USER = "decentralized-db-user";
+    private static final String SECRET = "secret-key";
+    private static final String FILENAME = "filename";
+    private static final String FILE = "file";
 
     private final String method;
     private final String user;
@@ -41,10 +43,10 @@ public class DecentralizedDBRequest {
     }
 
     public byte[] getFile() {
-	if(file) {
-	    return this.file.getBytes();
+	if(Strings.isNullOrEmpty(file)) {
+	    return null;
 	}
 
-	return null;
+	return this.file.getBytes();
     }
 }

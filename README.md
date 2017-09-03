@@ -127,3 +127,4 @@ thousands of servers for one file? Many servers will spend most of their time tr
 there are based off the number of keys.
     * Throw in junk keys? Useless keys that JailCell will know to ignore but a hacker may not
     * Traffic should be encrypted to begin with
+* We should add a login system
