@@ -44,7 +44,7 @@
 		    <execution><goals><goal>java</goal></goals></execution>
 		</executions>
 		<configuration>
-		    <mainClass>com.decentralizeddatabase.DecentralizedDDB</mainClass>
+		    <mainClass>com.decentralizeddatabase.DecentralizedDB</mainClass>
 		</configuration>
 	    </plugin>
 	</plugins>

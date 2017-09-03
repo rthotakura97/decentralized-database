@@ -18,8 +18,9 @@ public class CryptoBlock {
     }
 
     /**
-     *  Inputs: byte[] (data block), String (16 byte secret key)
-     *  Outputs: byte[] (encrypted data block)
+     *  @param block byte[] data block 
+     *  @param key String 16 byte secret key
+     *  @return byte[] encrypted data block
      */
     public byte[] encrypt(final byte[] block, final String key) throws NoSuchPaddingException, 
 							   NoSuchAlgorithmException, 
@@ -33,8 +34,9 @@ public class CryptoBlock {
     }
 
     /**
-     *   Inputs: byte[] (encrypted data block), String (16 byte secret key)
-     *   Outputs: byte[] (decrypted data block)
+     *   @param block byte[] encrypted data block
+     *   @param key String 16 byte secret key
+     *   @return byte[] decrypted data block
      */
     public byte[] decrypt(final byte[] block, final String key) throws InvalidKeyException, 
 							   BadPaddingException, 
