@@ -22,13 +22,17 @@ import java.security.NoSuchAlgorithmException;
 import static sun.net.www.protocol.http.AuthCacheValue.Type.Server;
 
 public class DecentralizedDB extends AbstractHandler {
-
+    
     private static final int PORT = 8080;
 
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 	    throws IOException, ServletException {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
+	response.getWriter().println("Request processing...");
+
+	Dispatcher.makeCall(new DecentralizedDBRequest(request));
+
         baseRequest.setHandled(true);
     }
 
