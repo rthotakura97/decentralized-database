@@ -128,3 +128,8 @@ there are based off the number of keys.
     * Throw in junk keys? Useless keys that JailCell will know to ignore but a hacker may not
     * Traffic should be encrypted to begin with
 * We should add a login system
+    * To go off that, caching
+* We should use a real database solution on the backend
+    * AWS DDB
+    * MySQL
+    * MongoDB
