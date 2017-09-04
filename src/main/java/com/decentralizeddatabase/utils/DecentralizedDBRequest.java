@@ -2,6 +2,7 @@ package com.decentralizeddatabase.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
 public class DecentralizedDBRequest {
@@ -24,6 +25,19 @@ public class DecentralizedDBRequest {
 	this.secretKey = request.getParameter(SECRET);
 	this.filename = request.getParameter(FILENAME);
 	this.file = request.getParameter(FILE);
+    }
+
+    @VisibleForTesting
+    DecentralizedDBRequest(final String method,
+			   final String user,
+			   final String secretKey,
+			   final String filename,
+			   final String file) {
+	this.method = method;
+	this.user = user;
+	this.secretKey = secretKey;
+	this.filename = filename;
+	this.file = file;
     }
 
     public String getMethod() {
