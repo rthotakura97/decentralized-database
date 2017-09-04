@@ -1,6 +1,7 @@
 package com.decentralizeddatabase.utils;
 
 import com.decentralizeddatabase.reno.Reno;
+import com.decentralizeddatabase.errors.BadRequest;
 
 public class Dispatcher {
 
@@ -16,7 +17,7 @@ public class Dispatcher {
     }
     
     //TODO: Have handler asynch do work and return, have followup response set after work is done
-    public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) {
+    public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest {
 	DecentralizedDBResponse response = null;
 	switch(request.getMethod()) {
 	    case LIST_ALL:
@@ -31,6 +32,8 @@ public class Dispatcher {
 	    case DELETE:
 		response = reno.delete(request);
 		break;
+	    default:
+		throw new BadRequest(400, "Invalid method requested");
 	}
 
 	return response;

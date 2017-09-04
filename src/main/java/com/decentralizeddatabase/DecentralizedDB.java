@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 
 import java.io.IOException;
 
+import com.decentralizeddatabase.errors.DecentralizedDBError;
 import com.decentralizeddatabase.utils.Dispatcher;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
@@ -27,10 +28,17 @@ public class DecentralizedDB extends AbstractHandler {
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 	    throws IOException, ServletException {
         response.setContentType("text/html;charset=utf-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-	response.getWriter().println("Request processing...");
+	try {
+	    final DecentralizedDBResponse renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
+	} catch (DecentralizedDBError e) {
+	    response.sendError(e.getErrorCode(), e.getMessage());
+	    return;
+	} catch (Exception e) {
+	    response.sendError(500);
+	    return;
+	}
 
-	final DecentralizedDBResponse renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
+        response.setStatus(HttpServletResponse.SC_OK);
 
         baseRequest.setHandled(true);
     }
