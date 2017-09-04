@@ -10,7 +10,7 @@ database that safely and securely encrypts broken up files and stores the pieces
 * User can see a list of all their files saved on our database
 * User can write, read, and delete files
     * No text editing capabilities in our service
-* Just make CLI tools for now (python client)
+* Just make CLI tools for now [python client](https://github.com/tdh911/decentralizeddb-python-client)
     * Looking to expand to user interface in future
     * python2 urllib2 library to send http requests
 * Takes in public key, secret key, path/to/file
