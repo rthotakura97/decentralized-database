@@ -4,6 +4,6 @@ public final class BadRequest extends DecentralizedDBError {
 
     public BadRequest(final int errorCode, final String message) {
 	this.errorCode = errorCode;
-	this.message = message;
+	this.message = String.format("BadRequest: %s", message);
     }
 }

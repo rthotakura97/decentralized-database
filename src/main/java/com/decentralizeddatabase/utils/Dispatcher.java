@@ -33,7 +33,7 @@ public class Dispatcher {
 		response = reno.delete(request);
 		break;
 	    default:
-		throw new BadRequest(400, "Invalid method requested");
+		throw new BadRequest(400, String.format("Invalid method '%s' requested", request.getMethod()));
 	}
 
 	return response;
