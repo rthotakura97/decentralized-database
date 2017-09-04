@@ -15,6 +15,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import org.json.JSONObject;
+
 public class DecentralizedDB extends AbstractHandler {
     
     private static final int PORT = 8080;
@@ -27,9 +29,10 @@ public class DecentralizedDB extends AbstractHandler {
 
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 	    throws IOException, ServletException {
-        response.setContentType("text/html;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
+	DecentralizedDBResponse renoResponse;
 	try {
-	    final DecentralizedDBResponse renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
+	    renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
 	} catch (DecentralizedDBError e) {
 	    response.sendError(e.getErrorCode(), e.getMessage());
 	    return;
@@ -38,8 +41,10 @@ public class DecentralizedDB extends AbstractHandler {
 	    return;
 	}
 
-        response.setStatus(HttpServletResponse.SC_OK);
+	final JSONObject json = renoResponse.buildJSON();
+	json.write(response.getWriter());
 
+        response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
     }
 

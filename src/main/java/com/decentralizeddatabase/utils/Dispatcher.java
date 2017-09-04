@@ -1,14 +1,10 @@
 package com.decentralizeddatabase.utils;
 
-import com.decentralizeddatabase.reno.Reno;
 import com.decentralizeddatabase.errors.BadRequest;
+import com.decentralizeddatabase.reno.Reno;
+import static com.decentralizeddatabase.utils.Constants.*;
 
-public class Dispatcher {
-
-    private static final String LIST_ALL = "list-all";
-    private static final String READ = "read";
-    private static final String WRITE = "write";
-    private static final String DELETE = "delete";
+public final class Dispatcher {
 
     private final Reno reno;
 
@@ -18,19 +14,23 @@ public class Dispatcher {
     
     //TODO: Have handler asynch do work and return, have followup response set after work is done
     public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest {
-	DecentralizedDBResponse response = null;
-	switch(request.getMethod()) {
+	final String method = request.getMethod();
+
+	final DecentralizedDBResponse response = new DecentralizedDBResponse();
+	response.setMethod(method);
+
+	switch(method) {
 	    case LIST_ALL:
-		response = reno.listAll(request);
+		response = reno.listAll(request, response);
 		break;
 	    case READ:
-		response = reno.read(request);
+		response = reno.read(request, response);
 		break;
 	    case WRITE:
-		response = reno.write(request);
+		response = reno.write(request, response);
 		break;
 	    case DELETE:
-		response = reno.delete(request);
+		response = reno.delete(request, response);
 		break;
 	    default:
 		throw new BadRequest(400, String.format("Invalid method '%s' requested", request.getMethod()));
