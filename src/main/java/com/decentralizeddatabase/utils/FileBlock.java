@@ -2,16 +2,16 @@ package com.decentralizeddatabase.utils;
 
 public class FileBlock {
 
-    private final long blockNumber;
+    private final long blockOrder;
     private final byte[] encryptedData;
 
-    public FileBlock(final long blockNumber, final byte[] encryptedData) {
-	this.blockNumber = blockNumber;
+    public FileBlock(final long blockOrder, final byte[] encryptedData) {
+	this.blockOrder = blockOrder;
 	this.encryptedData = encryptedData;
     }
 
-    public long getBlockNumber() {
-	return blockNumber;
+    public long getBlockOrder() {
+	return blockOrder;
     }
 
     public byte[] getData() {
