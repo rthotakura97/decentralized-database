@@ -2,6 +2,7 @@ package com.decentralizeddatabase.reno;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DataManipulator {
 
@@ -25,6 +26,24 @@ public class DataManipulator {
         }
 
         return fileSegments;
+    }
+
+    /**
+     * @param numberOfBlocks Int representing total number of blocks to make block orders for
+     * @return a list of Longs w/ the block orders
+     */
+
+    public List<Long> getBlockOrderValues(int numberOfBlocks){
+        List<Long> blockOrders = new ArrayList<Long>();
+
+        Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE-numberOfBlocks);
+        blockOrders.add(first);
+
+        for(int i=1; i<numberOfBlocks; i++){
+            blockOrders.add(ThreadLocalRandom.current().nextLong(blockOrders.get(i-1), Long.MAX_VALUE));
+        }
+
+        return blockOrders;
     }
 
 }

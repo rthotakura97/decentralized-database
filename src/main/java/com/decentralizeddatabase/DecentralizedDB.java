@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
+import java.util.List;
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
 import com.decentralizeddatabase.reno.DataManipulator;
@@ -50,11 +51,11 @@ public class DecentralizedDB extends AbstractHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        final Server server = new Server(PORT);
+        /*final Server server = new Server(PORT);
         server.setHandler(new DecentralizedDB());
 
         server.start();
-        server.join();
+        server.join();*/
     }
 }
 
