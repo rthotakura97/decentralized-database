@@ -32,7 +32,7 @@ public class Reno {
     }
 
     public void read(final DecentralizedDBRequest request,
-		     final DecentralizedDBResponse response) throws BadRequest {
+		     final DecentralizedDBResponse response) throws BadRequest, EncryptionError {
         final String filename = request.getFilename();
         final String user = request.getUser();
         final String secretKey = request.getSecretKey();
