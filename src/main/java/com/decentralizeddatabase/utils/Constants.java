@@ -12,4 +12,6 @@ public final class Constants {
     public static final String SECRET = "secret-key";
     public static final String FILENAME = "filename";
     public static final String FILE = "file";
+
+    public static final double NUM_BLOCKS = 4.0;
 }

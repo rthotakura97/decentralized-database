@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class DataManipulator {
+import static com.decentralizeddatabase.utils.Constants.*;
 
-    private static final double NUM_BLOCKS = 4.0;
+public class DataManipulator {
 
     /**
      *

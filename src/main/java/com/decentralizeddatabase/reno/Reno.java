@@ -33,7 +33,7 @@ public class Reno {
         List<String> blockKeys = new ArrayList<String>();
         Hasher hashFunction = new Hasher();
 
-        for(int i=0; i<4; i++)
+        for(int i=0; i<NUM_BLOCKS; i++)
             blockKeys.add(hashFunction.createBlockKey(request.getSecretKey(), request.getFilename(), i));
 
         //TODO: List of keys for blocks created, need to send to jailcell to retrieve blocks

@@ -51,11 +51,11 @@ public class DecentralizedDB extends AbstractHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        /*final Server server = new Server(PORT);
+        final Server server = new Server(PORT);
         server.setHandler(new DecentralizedDB());
 
         server.start();
-        server.join();*/
+        server.join();
     }
 }
 
