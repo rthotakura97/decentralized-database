@@ -17,4 +17,10 @@ public class FileData extends Object {
     public long getFileSize() {
 	return this.fileSize;
     }
+
+    @Override
+    public boolean equals(Object other) {
+	final FileData otherFile = (FileData) other;
+	return this.filename.equals(otherFile.getFilename());
+    }
 }
