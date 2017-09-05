@@ -8,4 +8,8 @@ public final class Constants {
 
     public static final String METHOD = "method";
     public static final String DATA = "data";
+    public static final String USER = "decentralized-db-user";
+    public static final String SECRET = "secret-key";
+    public static final String FILENAME = "filename";
+    public static final String FILE = "file";
 }

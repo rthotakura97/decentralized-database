@@ -9,27 +9,23 @@ import static com.decentralizeddatabase.utils.Constants.*;
 //TODO
 public class Reno {
 
-    public DecentralizedDBResponse listAll(final DecentralizedDBRequest request,
-					   final DecentralizedDBResponse response) throws BadRequest {
+    public void listAll(final DecentralizedDBRequest request,
+			final DecentralizedDBResponse response) throws BadRequest {
 
-	return response;
     }
 
-    public DecentralizedDBResponse read(final DecentralizedDBRequest request,
-				        final DecentralizedDBResponse response) throws BadRequest {
+    public void read(final DecentralizedDBRequest request,
+		     final DecentralizedDBResponse response) throws BadRequest {
 
-	return response;
     }
 
-    public DecentralizedDBResponse write(final DecentralizedDBRequest request,
-					 final DecentralizedDBResponse response) throws BadRequest {
+    public void write(final DecentralizedDBRequest request,
+		      final DecentralizedDBResponse response) throws BadRequest {
 
-	return response;
     }
 
-    public DecentralizedDBResponse delete(final DecentralizedDBRequest request,
-					  final DecentralizedDBResponse response) throws BadRequest {
+    public void delete(final DecentralizedDBRequest request,
+		       final DecentralizedDBResponse response) throws BadRequest {
 
-	return response;
     }
 }

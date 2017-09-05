@@ -5,13 +5,9 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 
-public class DecentralizedDBRequest {
+import static com.decentralizeddatabase.utils.Constants.*;
 
-    private static final String METHOD = "method";
-    private static final String USER = "decentralized-db-user";
-    private static final String SECRET = "secret-key";
-    private static final String FILENAME = "filename";
-    private static final String FILE = "file";
+public class DecentralizedDBRequest {
 
     private final String method;
     private final String user;
