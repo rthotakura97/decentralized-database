@@ -7,9 +7,9 @@ import com.google.common.hash.Hashing;
 public class Hasher {
 
     /**
-     * @param secretkey String
+     * @param secretKey String
      * @param filename String
-     * @param blocknumber int
+     * @param blockNumber int
      * @return String (20byte SHA-1 hash)
      */
     public static String createBlockKey(final String secretKey, final String filename, final int blockNumber){

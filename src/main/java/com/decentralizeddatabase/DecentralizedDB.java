@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
+import com.decentralizeddatabase.reno.DataManipulator;
 import com.decentralizeddatabase.utils.Dispatcher;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
