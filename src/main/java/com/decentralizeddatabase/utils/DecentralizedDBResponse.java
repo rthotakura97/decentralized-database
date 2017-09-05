@@ -9,7 +9,7 @@ import org.json.JSONObject;
 public class DecentralizedDBResponse {
     
     private String method;
-    private byte[] data;
+    private String data;
     private List<String> list;
 
     public void setList(final List<String> list) {
@@ -20,11 +20,11 @@ public class DecentralizedDBResponse {
 	return list;
     }
 
-    public void setData(final byte[] data) {
+    public void setData(final String data) {
 	this.data = data;
     }
 
-    public byte[] getData() {
+    public String getData() {
 	return data;
     }
 

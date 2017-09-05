@@ -5,11 +5,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
-import java.util.List;
+
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
 import com.decentralizeddatabase.errors.EncryptionError;
-import com.decentralizeddatabase.reno.DataManipulator;
 import com.decentralizeddatabase.utils.Dispatcher;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
@@ -58,5 +57,6 @@ public class DecentralizedDB extends AbstractHandler {
         server.start();
         server.join();
     }
+
 }
 

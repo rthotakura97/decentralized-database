@@ -1,5 +1,6 @@
 package com.decentralizeddatabase.utils;
 
+import com.decentralizeddatabase.errors.EncryptionError;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -22,7 +23,7 @@ public class DispatcherTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Before
-    public void setup() {
+    public void setup() throws EncryptionError {
 	this.dispatcher = new Dispatcher();
     }
 
