@@ -12,7 +12,7 @@ public class DataManipulator {
      * @param file File represented as string
      * @return List of byte arrays representing the broken file
      */
-    public List<byte[]> breakFile(final String file){
+    public static List<byte[]> breakFile(final String file){
 	final List<byte[]> fileSegments = new ArrayList<>();
 
 	final int length = file.length();
