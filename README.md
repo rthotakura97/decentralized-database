@@ -133,3 +133,4 @@ there are based off the number of keys.
     * AWS DDB
     * MySQL
     * MongoDB
+* Support HTTPS 
