@@ -114,6 +114,8 @@ database that safely and securely encrypts broken up files and stores the pieces
 * Contains N bytes of data
     * Variable amount of bytes
         * Limit to range of #blocks to prevent innefficient lookup times
+* Each file will be broken up into 4 blocks for now
+    * This needs to be increased later on
 * Contains metadata
     * A signed long that indicates where in the order this block is in the file
     * NOTE - This is NOT the block number
