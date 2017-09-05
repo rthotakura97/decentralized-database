@@ -12,7 +12,7 @@ public class Hasher {
      * @param blockNumber int
      * @return String (20byte SHA-1 hash)
      */
-    public String createBlockKey(final String secretKey, final String filename, final int blockNumber){
+    public static String createBlockKey(final String secretKey, final String filename, final int blockNumber){
          final String hashed = Hashing.sha1()
                  .hashString(secretKey+filename+Integer.toString(blockNumber), Charsets.UTF_8)
                  .toString();

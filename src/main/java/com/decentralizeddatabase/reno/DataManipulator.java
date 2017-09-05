@@ -33,7 +33,7 @@ public class DataManipulator {
      * @return a list of Longs w/ the block orders
      */
 
-    public List<Long> getBlockOrderValues(final int numberOfBlocks) {
+    public static List<Long> getBlockOrderValues(final int numberOfBlocks) {
         final List<Long> blockOrders = new ArrayList<Long>();
 	long maxLong = Long.MAX_VALUE - 1_000_000_000;
 

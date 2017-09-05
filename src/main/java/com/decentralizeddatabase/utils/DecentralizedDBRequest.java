@@ -3,7 +3,6 @@ package com.decentralizeddatabase.utils;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
 
 import static com.decentralizeddatabase.utils.Constants.*;
 
@@ -52,11 +51,7 @@ public class DecentralizedDBRequest {
 	return this.filename;
     }
 
-    public byte[] getFile() {
-	if(Strings.isNullOrEmpty(file)) {
-	    return null;
-	}
-
-	return this.file.getBytes();
+    public String getFile() {
+	return this.file;
     }
 }
