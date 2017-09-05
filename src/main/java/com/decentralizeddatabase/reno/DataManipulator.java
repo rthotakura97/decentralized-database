@@ -33,14 +33,18 @@ public class DataManipulator {
      * @return a list of Longs w/ the block orders
      */
 
-    public List<Long> getBlockOrderValues(int numberOfBlocks){
-        List<Long> blockOrders = new ArrayList<Long>();
+    public List<Long> getBlockOrderValues(final int numberOfBlocks) {
+        final List<Long> blockOrders = new ArrayList<Long>();
+	long maxLong = Long.MAX_VALUE - 1_000_000_000;
 
-        Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, Long.MAX_VALUE-numberOfBlocks);
+        final Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, maxLong);
         blockOrders.add(first);
 
-        for(int i=1; i<numberOfBlocks; i++){
-            blockOrders.add(ThreadLocalRandom.current().nextLong(blockOrders.get(i-1), Long.MAX_VALUE));
+        for (int i = 1; i < numberOfBlocks; i++) {
+	    maxLong += (Long.MAX_VALUE - maxLong) / 2;
+
+	    final Long blockOrder = ThreadLocalRandom.current().nextLong(blockOrders.get(i-1) + 1, maxLong);
+            blockOrders.add(blockOrder);
         }
 
         return blockOrders;
