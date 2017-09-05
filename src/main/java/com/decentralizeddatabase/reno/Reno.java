@@ -87,9 +87,9 @@ public class Reno {
             byte[] encrypted = null;
             try {
                 //TODO: VALIDATE SECRET KEY AS 16 BYTES
-            encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
+		encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
             } catch (Exception e) {
-            throw new EncryptionError(500, "There has been an error encrypting your files");
+		throw new EncryptionError(500, "There has been an error encrypting your files");
             }
             final long blockOrder = it2.next();
 
@@ -111,19 +111,21 @@ public class Reno {
         return keys;
     }
 
-    private String makeFile(final List<FileBlock> blocks, final String secretKey){
+    private String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
         Collections.sort(blocks, new SortBlocks());
         String fileString = "";
-        for(int i=0; i<blocks.size(); i++){
-            byte[] blockData = blocks.get(i).getData();
+        for(FileBlock block : blocks) {
+            final byte[] blockData = block.getData();
+	    byte[] decryptedData;
             try {
                 //TODO: VALIDATE SECRET KEY AS 16 BYTES
-                blockData = cryptoBlock.decrypt(blockData, secretKey);
+                decryptedData = cryptoBlock.decrypt(blockData, secretKey);
             } catch (Exception e) {
-                //TODO: Fill in exception
+		throw new EncryptionError(500, "Could not decrypt your file");
             }
-            fileString += blockData.toString();
+            fileString += new String(decryptedData);
         }
+
         return fileString;
     }
 
