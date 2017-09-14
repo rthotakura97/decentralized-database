@@ -39,7 +39,8 @@ public class Reno {
         final String user = request.getUser();
         final String secretKey = request.getSecretKey();
 
-        final List<String> keys = createKeys(secretKey, filename, user, 4); //TODO: use multimap to get #blocks)
+	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+        final List<String> keys = createKeys(secretKey, filename, user, numBlocks); //TODO: use multimap to get #blocks)
         List<FileBlock> blocks = retrieve(keys);
         String file = makeFile(blocks, secretKey);
 
@@ -103,7 +104,7 @@ public class Reno {
         return blocks;
     }
 
-    private List<String> createKeys(final String secretKey, final String filename, final String user, final int fileSize) {
+    private List<String> createKeys(final String secretKey, final String filename, final String user, final long fileSize) {
         final List<String> keys = new ArrayList<>();
 
         for (int blockNum  = 0; blockNum < fileSize; blockNum++) {
@@ -133,14 +134,15 @@ public class Reno {
     }
 
     private void send(final List<FileBlock> blocks, final List<String> keys) {
-
+	//TODO
     }
 
     private void send(final List<String> keys) {
-
+	//TODO
     }
 
     private final List<FileBlock> retrieve(final List<String> keys){
+	//TODO
         return null;
     }
 
