@@ -2,6 +2,7 @@ package com.decentralizeddatabase.utils;
 
 import com.decentralizeddatabase.errors.BadRequest;
 import com.decentralizeddatabase.errors.EncryptionError;
+import com.decentralizeddatabase.errors.FileNotFoundError;
 import com.decentralizeddatabase.reno.Reno;
 import static com.decentralizeddatabase.utils.Constants.*;
 
@@ -14,7 +15,9 @@ public final class Dispatcher {
     }
     
     //TODO: Have handler asynch do work and return, have followup response set after work is done
-    public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest, EncryptionError {
+    public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest, 
+											 EncryptionError,
+											 FileNotFoundError {
 	final String method = request.getMethod();
 
 	DecentralizedDBResponse response = new DecentralizedDBResponse();

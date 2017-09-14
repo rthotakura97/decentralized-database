@@ -5,6 +5,8 @@ import java.util.Collection;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
+import com.decentralizeddatabase.errors.FileNotFoundError;
+
 public class FileTable {
 
     private final Multimap<String,FileData> fileTable;
@@ -22,7 +24,7 @@ public class FileTable {
 	return fileTable.get(user);
     }
 
-    public FileData getFile(final String user, final String filename) {
+    public FileData getFile(final String user, final String filename) throws FileNotFoundError {
 	final Collection<FileData> files = getFiles(user);
 
 	for (FileData file : files) {
@@ -31,10 +33,10 @@ public class FileTable {
 	    }
 	}
 
-	return null;
+	throw new FileNotFoundError(String.format("The file %s was not found", filename));
     }
 
-    public boolean removeFile(final String user, final String filename) {
+    public boolean removeFile(final String user, final String filename) throws FileNotFoundError {
 	final FileData file = getFile(user, filename);
 
 	return fileTable.remove(user, file);

@@ -1,16 +1,18 @@
 package com.decentralizeddatabase.reno;
 
-import java.io.File;
-import java.util.*;
-
 import com.decentralizeddatabase.errors.BadRequest;
 import com.decentralizeddatabase.errors.EncryptionError;
+import com.decentralizeddatabase.errors.FileNotFoundError;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
 import com.decentralizeddatabase.utils.FileBlock;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Iterator;
 
 import static com.decentralizeddatabase.utils.Constants.*;
 
@@ -30,25 +32,37 @@ public class Reno {
 
     public void listAll(final DecentralizedDBRequest request,
 			final DecentralizedDBResponse response) throws BadRequest {
+	final String user = request.getUser();
 
+	final Collection<FileData> fileList = fileTable.getFiles(user);
+	final List<String> filenames = new ArrayList<>();
+
+	for (FileData file : fileList) {
+	    filenames.add(file.getFilename());
+	}
+
+	response.setList(filenames);
     }
 
     public void read(final DecentralizedDBRequest request,
-		     final DecentralizedDBResponse response) throws BadRequest, EncryptionError {
+		     final DecentralizedDBResponse response) throws BadRequest, 
+								    EncryptionError, 
+								    FileNotFoundError {
         final String filename = request.getFilename();
         final String user = request.getUser();
         final String secretKey = request.getSecretKey();
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
-        final List<String> keys = createKeys(secretKey, filename, user, numBlocks); //TODO: use multimap to get #blocks)
-        List<FileBlock> blocks = retrieve(keys);
-        String file = makeFile(blocks, secretKey);
+        final List<String> keys = createKeys(secretKey, filename, user, numBlocks); 
+        final List<FileBlock> blocks = retrieve(keys);
+        final String file = makeFile(blocks, secretKey);
 
         response.setData(file);
     }
 
     public void write(final DecentralizedDBRequest request,
-		      final DecentralizedDBResponse response) throws BadRequest, EncryptionError {
+		      final DecentralizedDBResponse response) throws BadRequest, 
+								     EncryptionError {
         final String file = request.getFile();
         final String filename = request.getFilename();
         final String user = request.getUser();
@@ -64,14 +78,15 @@ public class Reno {
     }
 
     public void delete(final DecentralizedDBRequest request,
-		       final DecentralizedDBResponse response) throws BadRequest {
+		       final DecentralizedDBResponse response) throws BadRequest, 
+								      FileNotFoundError {
         final String filename = request.getFilename();
         final String user = request.getUser();
         final String secretKey = request.getSecretKey();
 
-        final List<String> blockKeys = createKeys(secretKey, filename, user, (int) NUM_BLOCKS);
+	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+        final List<String> blockKeys = createKeys(secretKey, filename, user, numBlocks);
 
-        //TODO: List of keys for blocks created, need to send to jailcell to retrieve blocks
         send(blockKeys);
 
 	fileTable.removeFile(user, filename);
