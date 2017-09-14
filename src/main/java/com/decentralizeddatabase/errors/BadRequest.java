@@ -2,8 +2,8 @@ package com.decentralizeddatabase.errors;
 
 public final class BadRequest extends DecentralizedDBError {
 
-    public BadRequest(final int errorCode, final String message) {
-	this.errorCode = errorCode;
+    public BadRequest(final String message) {
+	this.errorCode = 400;
 	this.message = String.format("BadRequest: %s", message);
     }
 }
