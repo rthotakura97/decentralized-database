@@ -1,4 +1,4 @@
-package com.decentralizeddatabase.reno;
+package com.decentralizeddatabase.reno.crypto;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

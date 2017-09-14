@@ -3,6 +3,10 @@ package com.decentralizeddatabase.reno;
 import com.decentralizeddatabase.errors.BadRequest;
 import com.decentralizeddatabase.errors.EncryptionError;
 import com.decentralizeddatabase.errors.FileNotFoundError;
+import com.decentralizeddatabase.reno.crypto.CryptoBlock;
+import com.decentralizeddatabase.reno.crypto.Hasher;
+import com.decentralizeddatabase.reno.filetable.FileData;
+import com.decentralizeddatabase.reno.filetable.FileTable;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
 import com.decentralizeddatabase.utils.FileBlock;
@@ -133,15 +137,18 @@ public class Reno {
     private String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
         Collections.sort(blocks, new SortBlocks());
         String fileString = "";
+
         for(FileBlock block : blocks) {
             final byte[] blockData = block.getData();
 	    byte[] decryptedData;
+
             try {
                 //TODO: VALIDATE SECRET KEY AS 16 BYTES
                 decryptedData = cryptoBlock.decrypt(blockData, secretKey);
             } catch (Exception e) {
 		throw new EncryptionError("Could not decrypt your file");
             }
+
             fileString += new String(decryptedData);
         }
 

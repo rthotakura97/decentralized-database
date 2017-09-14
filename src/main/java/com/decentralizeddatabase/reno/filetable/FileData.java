@@ -1,4 +1,4 @@
-package com.decentralizeddatabase.reno;
+package com.decentralizeddatabase.reno.filetable;
 
 public class FileData extends Object {
 

@@ -1,4 +1,4 @@
-package com.decentralizeddatabase.reno;
+package com.decentralizeddatabase.reno.crypto;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;

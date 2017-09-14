@@ -1,4 +1,4 @@
-package com.decentralizeddatabase.reno;
+package com.decentralizeddatabase.reno.filetable;
 
 import java.util.Collection;
 
