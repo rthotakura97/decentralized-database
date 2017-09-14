@@ -17,6 +17,7 @@ import static com.decentralizeddatabase.utils.Constants.*;
 public class Reno {
 
     private final CryptoBlock cryptoBlock;
+    private final FileTable fileTable;
 
     public Reno() throws EncryptionError {
 	try {
@@ -24,6 +25,7 @@ public class Reno {
 	} catch (Exception e) {
 	    throw new EncryptionError(500, "There has been an error initializing our encryption scheme");
 	}
+	this.fileTable = new FileTable();
     }
 
     public void listAll(final DecentralizedDBRequest request,
@@ -57,7 +59,7 @@ public class Reno {
 
         send(blocks, keys);
 
-        // TODO: After successful request, save new filename
+	fileTable.addFile(user, filename, numBlocks);	
     }
 
     public void delete(final DecentralizedDBRequest request,
@@ -71,6 +73,7 @@ public class Reno {
         //TODO: List of keys for blocks created, need to send to jailcell to retrieve blocks
         send(blockKeys);
 
+	fileTable.removeFile(user, filename);
     }
 
     private List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
