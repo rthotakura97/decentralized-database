@@ -23,7 +23,7 @@ public class Reno {
 	try {
 	    this.cryptoBlock = new CryptoBlock();
 	} catch (Exception e) {
-	    throw new EncryptionError(500, "There has been an error initializing our encryption scheme");
+	    throw new EncryptionError("There has been an error initializing our encryption scheme");
 	}
 	this.fileTable = new FileTable();
     }
@@ -93,7 +93,7 @@ public class Reno {
                 //TODO: VALIDATE SECRET KEY AS 16 BYTES
 		encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
             } catch (Exception e) {
-		throw new EncryptionError(500, "There has been an error encrypting your files");
+		throw new EncryptionError("There has been an error encrypting your files");
             }
             final long blockOrder = it2.next();
 
@@ -125,7 +125,7 @@ public class Reno {
                 //TODO: VALIDATE SECRET KEY AS 16 BYTES
                 decryptedData = cryptoBlock.decrypt(blockData, secretKey);
             } catch (Exception e) {
-		throw new EncryptionError(500, "Could not decrypt your file");
+		throw new EncryptionError("Could not decrypt your file");
             }
             fileString += new String(decryptedData);
         }
