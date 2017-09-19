@@ -9,6 +9,7 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
+//TODO: use hmac
 public class CryptoBlock {
 
     private final Cipher cipher;

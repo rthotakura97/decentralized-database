@@ -1,5 +1,6 @@
 package com.decentralizeddatabase.utils;
 
+//TODO: add constants from other files to this file
 public final class Constants {
     public static final String LIST_ALL = "list-all";
     public static final String READ = "read";
