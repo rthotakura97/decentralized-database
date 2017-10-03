@@ -1,6 +1,5 @@
 package com.decentralizeddatabase.utils;
 
-import com.decentralizeddatabase.errors.EncryptionError;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -9,6 +8,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.decentralizeddatabase.errors.BadRequest;
+import com.decentralizeddatabase.errors.EncryptionError;
 
 public class DispatcherTest {
 
@@ -28,7 +28,7 @@ public class DispatcherTest {
     }
 
     @Test
-    public void testMakeCallWithBadMethod() throws BadRequest {
+    public void testMakeCallWithBadMethod() throws Exception {
 	DecentralizedDBRequest request = new DecentralizedDBRequest("invalid",
 								    TEST_USER,
 								    TEST_SECRET_KEY,
@@ -37,6 +37,6 @@ public class DispatcherTest {
 	thrown.expect(BadRequest.class);
 	dispatcher.makeCall(request);
 
-	Assert.fail("Shouldn't be here");
+	Assert.fail("No BadRequest was thrown");
     }
 }
