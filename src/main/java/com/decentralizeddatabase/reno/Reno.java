@@ -10,6 +10,7 @@ import com.decentralizeddatabase.reno.filetable.FileTable;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
 import com.decentralizeddatabase.utils.FileBlock;
+import com.decentralizeddatabase.utils.Validations;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +37,7 @@ public class Reno {
 
     public void listAll(final DecentralizedDBRequest request,
 			final DecentralizedDBResponse response) throws BadRequest {
-	final String user = request.getUser();
+	final String user = Validations.validateUser(request.getUser());
 
 	final Collection<FileData> fileList = fileTable.getFiles(user);
 	final List<String> filenames = new ArrayList<>();
@@ -53,11 +54,12 @@ public class Reno {
 								    EncryptionError, 
 								    FileNotFoundError {
         final String filename = request.getFilename();
-        final String user = request.getUser();
-        final String secretKey = request.getSecretKey();
+	final String user = Validations.validateUser(request.getUser());
+        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> keys = createKeys(secretKey, filename, user, numBlocks); 
+
         final List<FileBlock> blocks = retrieve(keys);
         final String file = makeFile(blocks, secretKey);
 
@@ -69,8 +71,8 @@ public class Reno {
 								     EncryptionError {
         final String file = request.getFile();
         final String filename = request.getFilename();
-        final String user = request.getUser();
-        final String secretKey = request.getSecretKey();
+	final String user = Validations.validateUser(request.getUser());
+        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
 
         final List<FileBlock> blocks = createBlocks(secretKey, file);
         final int numBlocks = blocks.size();
@@ -85,8 +87,8 @@ public class Reno {
 		       final DecentralizedDBResponse response) throws BadRequest, 
 								      FileNotFoundError {
         final String filename = request.getFilename();
-        final String user = request.getUser();
-        final String secretKey = request.getSecretKey();
+	final String user = Validations.validateUser(request.getUser());
+        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> blockKeys = createKeys(secretKey, filename, user, numBlocks);
@@ -109,7 +111,6 @@ public class Reno {
         while (it1.hasNext() && it2.hasNext()) {
             byte[] encrypted = null;
             try {
-                //TODO: VALIDATE SECRET KEY AS 16 BYTES
 		encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
             } catch (Exception e) {
 		throw new EncryptionError("There has been an error encrypting your files");
