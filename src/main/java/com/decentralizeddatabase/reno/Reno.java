@@ -55,7 +55,8 @@ public class Reno {
 								    FileNotFoundError {
         final String filename = request.getFilename();
 	final String user = Validations.validateUser(request.getUser());
-        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> keys = createKeys(secretKey, filename, user, numBlocks); 
@@ -72,7 +73,8 @@ public class Reno {
         final String file = request.getFile();
         final String filename = request.getFilename();
 	final String user = Validations.validateUser(request.getUser());
-        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
         final List<FileBlock> blocks = createBlocks(secretKey, file);
         final int numBlocks = blocks.size();
@@ -88,7 +90,8 @@ public class Reno {
 								      FileNotFoundError {
         final String filename = request.getFilename();
 	final String user = Validations.validateUser(request.getUser());
-        final String secretKey = Hasher.createSecretKey(request.getSecretKey());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> blockKeys = createKeys(secretKey, filename, user, numBlocks);
