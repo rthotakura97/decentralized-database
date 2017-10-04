@@ -12,6 +12,10 @@ public final class Validations {
     private static final Pattern USER_PATTERN = Pattern.compile("([A-Z]*[a-z]*[0-9]*)");
 
     public static String validateUser(final String user) throws BadRequest {
+	if (Strings.isNullOrEmpty(user)) {
+	    throw new BadRequest("No user provided");
+	}
+
 	final Matcher matcher = USER_PATTERN.matcher(user);
 
 	if (!matcher.matches()) {
