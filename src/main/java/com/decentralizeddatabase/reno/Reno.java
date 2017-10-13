@@ -58,13 +58,8 @@ public class Reno {
 	    final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-        if(secretKey.length() != 16){
-            System.out.println("Secret key is wrong length.");
-            return;
-        }
-
 	    final long numBlocks = fileTable.getFile(user, filename).getFileSize();
-        final List<String> keys = createKeys(secretKey, filename, user, numBlocks); 
+        final List<String> keys = createKeys(secretKey, filename, user, numBlocks);
 
         final List<FileBlock> blocks = retrieve(keys);
         final String file = makeFile(blocks, secretKey);
@@ -82,12 +77,11 @@ public class Reno {
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
         final List<FileBlock> blocks = createBlocks(secretKey, file);
-        final int numBlocks = blocks.size();
-        final List<String> keys = createKeys(secretKey, filename, user, numBlocks);
+        final List<String> keys = createKeys(secretKey, filename, user, blocks.size());
 
         send(blocks, keys);
 
-	fileTable.addFile(user, filename, numBlocks);	
+	    fileTable.addFile(user, filename, blocks.size());
     }
 
     public void delete(final DecentralizedDBRequest request,
