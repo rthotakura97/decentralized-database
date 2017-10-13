@@ -35,7 +35,7 @@ public class DataManipulator {
 
     public static List<Long> getBlockOrderValues(final int numberOfBlocks) {
         final List<Long> blockOrders = new ArrayList<Long>();
-	long maxLong = Long.MAX_VALUE - 1_000_000_000;
+	    long maxLong = Long.MAX_VALUE - 1_000_000_000;
 
         final Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, maxLong);
         blockOrders.add(first);
