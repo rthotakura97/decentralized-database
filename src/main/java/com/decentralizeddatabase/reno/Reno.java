@@ -3,7 +3,6 @@ package com.decentralizeddatabase.reno;
 import com.decentralizeddatabase.errors.BadRequest;
 import com.decentralizeddatabase.errors.EncryptionError;
 import com.decentralizeddatabase.errors.FileNotFoundError;
-import com.decentralizeddatabase.reno.crypto.CryptoBlock;
 import com.decentralizeddatabase.reno.crypto.Hasher;
 import com.decentralizeddatabase.reno.filetable.FileData;
 import com.decentralizeddatabase.reno.filetable.FileTable;
@@ -14,24 +13,17 @@ import com.decentralizeddatabase.utils.Validations;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Iterator;
 
 import static com.decentralizeddatabase.utils.Constants.*;
 
 public class Reno {
 
-    private final CryptoBlock cryptoBlock;
+    private final DataManipulator dataManipulator;
     private final FileTable fileTable;
 
     public Reno() throws EncryptionError {
-        try {
-            this.cryptoBlock = new CryptoBlock();
-        } catch (Exception e) {
-            throw new EncryptionError("There has been an error initializing our encryption scheme");
-        }
+	this.dataManipulator = new DataManipulator();
         this.fileTable = new FileTable();
     }
 
@@ -59,10 +51,10 @@ public class Reno {
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
-        final List<String> keys = createKeys(secretKey, filename, user, numBlocks);
+        final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
 
         final List<FileBlock> blocks = retrieve(keys);
-        final String file = makeFile(blocks, secretKey);
+        final String file = dataManipulator.makeFile(blocks, secretKey);
 
         response.setData(file);
     }
@@ -76,9 +68,14 @@ public class Reno {
 	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-        final List<FileBlock> blocks = createBlocks(secretKey, file);
-        final List<String> keys = createKeys(secretKey, filename, user, blocks.size());
+        final List<FileBlock> blocks = dataManipulator.createBlocks(secretKey, file);
+        final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, blocks.size());
 
+	// This will need some looking into when we implement Jailcell
+	// TODO: Design ?, How do we overwrite existing files?
+	if (fileTable.containsFile(user, filename)) {
+	    sendForDelete(keys);
+	}
         sendForWrite(blocks, keys);
 
 	fileTable.addFile(user, filename, blocks.size());
@@ -93,68 +90,11 @@ public class Reno {
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
 	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
-        final List<String> blockKeys = createKeys(secretKey, filename, user, numBlocks);
+        final List<String> blockKeys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
 
         sendForDelete(blockKeys);
 
 	fileTable.removeFile(user, filename);
-    }
-
-    private List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
-        final List<FileBlock> blocks = new ArrayList<>();
-
-        final List<byte[]> splitFiles = DataManipulator.breakFile(file);
-        final int numBlocks = splitFiles.size();
-        final List<Long> blockOrders = DataManipulator.getBlockOrderValues(numBlocks);
-
-        final Iterator<byte[]> it1 = splitFiles.iterator();
-        final Iterator<Long> it2 = blockOrders.iterator();
-
-        while (it1.hasNext() && it2.hasNext()) {
-            byte[] encrypted = null;
-            try {
-		encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
-            } catch (Exception e) {
-		throw new EncryptionError("There has been an error encrypting your files");
-            }
-            final long blockOrder = it2.next();
-
-            final FileBlock block = new FileBlock(blockOrder, encrypted);
-            blocks.add(block);
-        }
-
-        return blocks;
-    }
-
-    private List<String> createKeys(final String secretKey, final String filename, final String user, final long fileSize) {
-        final List<String> keys = new ArrayList<>();
-
-        for (int blockNum  = 0; blockNum < fileSize; blockNum++) {
-            final String key = Hasher.createBlockKey(secretKey, filename, blockNum);
-            keys.add(key);
-        }
-
-        return keys;
-    }
-
-    private String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
-        Collections.sort(blocks, new SortBlocks());
-        String fileString = "";
-
-        for(FileBlock block : blocks) {
-            final byte[] blockData = block.getData();
-	    byte[] decryptedData;
-
-            try {
-                decryptedData = cryptoBlock.decrypt(blockData, secretKey);
-            } catch (Exception e) {
-		throw new EncryptionError("Could not decrypt your file");
-            }
-
-            fileString += new String(decryptedData);
-        }
-
-        return fileString;
     }
 
     private void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
@@ -168,17 +108,5 @@ public class Reno {
     private final List<FileBlock> retrieve(final List<String> keys){
 	//TODO
         return null;
-    }
-
-    private class SortBlocks implements Comparator<FileBlock> {
-        @Override
-        public int compare(FileBlock o1, FileBlock o2) {
-            if(o1.getBlockOrder() > o2.getBlockOrder())
-                return 1;
-            else if(o1.getBlockOrder() < o2.getBlockOrder())
-                return -1;
-            else
-                return 0;
-        }
     }
 }
