@@ -38,7 +38,7 @@ public class FileTable {
 
     /**
      * @param String user - username of account
-     * @return Collection of FileData that corresponds to the user, returns null if user does not exist
+     * @return Collection of FileData that corresponds to the user, returns an empty collection if user does not exist
      */
     public Collection<FileData> getFiles(final String user) {
 	return fileTable.get(user);
@@ -83,5 +83,20 @@ public class FileTable {
      */
     public boolean removeUser(final String user) {
 	return fileTable.removeAll(user) != null;
+    }
+
+    /**
+     * @param String user
+     * @param String filename
+     * @return Boolean if the file exists or not
+     */
+    public boolean containsFile(final String user, final String filename) {
+	try {
+	    getFile(user, filename);
+	} catch (FileNotFoundError e) {
+	    return false;
+	}
+
+	return true;
     }
 }
