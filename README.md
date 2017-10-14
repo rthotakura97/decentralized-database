@@ -12,7 +12,7 @@ database that safely and securely encrypts broken up files and stores the pieces
     * No text editing capabilities in our service
 * Just make CLI tools for now [python client](https://github.com/tdh911/decentralizeddb-python-client)
     * Looking to expand to user interface in future
-    * python2 urllib2 library to send http requests
+    * python2 requests library to send http requests
 * Takes in public key, secret key, path/to/file
 
 ## Intermediate Service - RenoService
@@ -131,8 +131,4 @@ there are based off the number of keys.
     * Traffic should be encrypted to begin with
 * We should add a login system
     * To go off that, caching
-* We should use a real database solution on the backend
-    * AWS DDB
-    * MySQL
-    * MongoDB
 * Support HTTPS 
