@@ -35,4 +35,20 @@ public final class ValidationsTest {
 
 	Assert.fail("No Bad Request was thrown");
     }
+
+    @Test
+    public void testRawSecretKeyWithValidKey() throws BadRequest {
+	final String expected = "somekey 12#42";
+	final String actual = Validations.validateRawSecretKey(expected);
+	
+	Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRawSecretKeyWithInvalidKey() throws BadRequest {
+	thrown.expect(BadRequest.class);
+	Validations.validateRawSecretKey(null);
+
+	Assert.fail("No Bad Request was thrown");
+    }
 }
