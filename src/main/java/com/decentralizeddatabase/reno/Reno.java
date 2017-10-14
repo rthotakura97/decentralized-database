@@ -33,10 +33,10 @@ public class Reno {
             throw new EncryptionError("There has been an error initializing our encryption scheme");
         }
         this.fileTable = new FileTable();
-        }
+    }
 
-        public void listAll(final DecentralizedDBRequest request,
-                final DecentralizedDBResponse response) throws BadRequest {
+    public void listAll(final DecentralizedDBRequest request,
+			final DecentralizedDBResponse response) throws BadRequest {
         final String user = Validations.validateUser(request.getUser());
 
         final Collection<FileData> fileList = fileTable.getFiles(user);
@@ -54,11 +54,11 @@ public class Reno {
 								    EncryptionError, 
 								    FileNotFoundError {
         final String filename = request.getFilename();
-	    final String user = Validations.validateUser(request.getUser());
-	    final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+	final String user = Validations.validateUser(request.getUser());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-	    final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> keys = createKeys(secretKey, filename, user, numBlocks);
 
         final List<FileBlock> blocks = retrieve(keys);
@@ -72,16 +72,16 @@ public class Reno {
 								     EncryptionError {
         final String file = request.getFile();
         final String filename = request.getFilename();
-	    final String user = Validations.validateUser(request.getUser());
-	    final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+	final String user = Validations.validateUser(request.getUser());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
         final List<FileBlock> blocks = createBlocks(secretKey, file);
         final List<String> keys = createKeys(secretKey, filename, user, blocks.size());
 
-        send(blocks, keys);
+        sendForWrite(blocks, keys);
 
-	    fileTable.addFile(user, filename, blocks.size());
+	fileTable.addFile(user, filename, blocks.size());
     }
 
     public void delete(final DecentralizedDBRequest request,
@@ -89,15 +89,15 @@ public class Reno {
 								      FileNotFoundError {
         final String filename = request.getFilename();
         final String user = Validations.validateUser(request.getUser());
-	    final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-	    final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> blockKeys = createKeys(secretKey, filename, user, numBlocks);
 
-        send(blockKeys);
+        sendForDelete(blockKeys);
 
-	    fileTable.removeFile(user, filename);
+	fileTable.removeFile(user, filename);
     }
 
     private List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
@@ -157,11 +157,11 @@ public class Reno {
         return fileString;
     }
 
-    private void send(final List<FileBlock> blocks, final List<String> keys) {
+    private void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
 	//TODO
     }
 
-    private void send(final List<String> keys) {
+    private void sendForDelete(final List<String> keys) {
 	//TODO
     }
 
