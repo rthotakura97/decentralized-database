@@ -3,11 +3,11 @@ package com.decentralizeddatabase.reno.filetable;
 public class FileData extends Object {
 
     private final String filename;
-    private final long fileSize;
+    private long fileSizeInBlocks;
 
-    public FileData(final String filename, final long fileSize) {
+    public FileData(final String filename, final long fileSizeInBlocks) {
 	this.filename = filename;
-	this.fileSize = fileSize;
+	this.fileSizeInBlocks = fileSizeInBlocks;
     }
 
     public String getFilename() {
@@ -15,12 +15,10 @@ public class FileData extends Object {
     }
 
     public long getFileSize() {
-	return this.fileSize;
+	return this.fileSizeInBlocks;
     }
 
-    @Override
-    public boolean equals(Object other) {
-	final FileData otherFile = (FileData) other;
-	return this.filename.equals(otherFile.getFilename());
+    public void updateFileSize(final long fileSizeInBlocks) {
+	this.fileSizeInBlocks = fileSizeInBlocks;
     }
 }
