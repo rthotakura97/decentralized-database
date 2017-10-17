@@ -3,9 +3,9 @@ package com.decentralizeddatabase.utils;
 public class FileBlock {
 
     private final long blockOrder;
-    private final byte[] encryptedData;
+    private final String encryptedData;
 
-    public FileBlock(final long blockOrder, final byte[] encryptedData) {
+    public FileBlock(final long blockOrder, final String encryptedData) {
 	this.blockOrder = blockOrder;
 	this.encryptedData = encryptedData;
     }
@@ -14,7 +14,7 @@ public class FileBlock {
 	return blockOrder;
     }
 
-    public byte[] getData() {
+    public String getData() {
 	return encryptedData;
     }
 }

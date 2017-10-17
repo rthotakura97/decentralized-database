@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.decentralizeddatabase.errors.EncryptionError;
-import com.decentralizeddatabase.errors.FileNotFoundError;
 import com.decentralizeddatabase.reno.crypto.CryptoBlock;
 import com.decentralizeddatabase.reno.crypto.Hasher;
 import com.decentralizeddatabase.utils.FileBlock;
@@ -16,42 +15,23 @@ import static com.decentralizeddatabase.utils.Constants.*;
 
 public class DataManipulator {
 
-    private final CryptoBlock cryptoBlock;
-
-    public DataManipulator() throws EncryptionError {
-        try {
-            this.cryptoBlock = new CryptoBlock();
-        } catch (Exception e) {
-            throw new EncryptionError("There has been an error initializing our encryption scheme");
-        }
-    }
-
-    /**
-     *
-     * @param file File represented as string
-     * @return List of byte arrays representing the broken file
-     */
-    public static List<byte[]> breakFile(final String file){
-	final List<byte[]> fileSegments = new ArrayList<>();
+    private static List<String> breakFile(final String file) {
+	final List<String> fileSegments = new ArrayList<>();
 
 	final int length = file.length();
         final int sizeOfSegment = (int) Math.ceil(length / NUM_BLOCKS);
 
         int index = 0;
         while (index < length) {
-            fileSegments.add((file.substring(index, Math.min(index+sizeOfSegment, length))).getBytes());
+	    final String chunk = file.substring(index, Math.min(index + sizeOfSegment, length));
+            fileSegments.add(chunk);
             index += sizeOfSegment;
         }
 
         return fileSegments;
     }
 
-    /**
-     * @param numberOfBlocks Int representing total number of blocks to make block orders for
-     * @return a list of Longs w/ the block orders
-     */
-
-    public static List<Long> getBlockOrderValues(final int numberOfBlocks) {
+    private static List<Long> getBlockOrderValues(final int numberOfBlocks) {
         final List<Long> blockOrders = new ArrayList<Long>();
 	long maxLong = Long.MAX_VALUE - 1_000_000_000;
 
@@ -91,40 +71,40 @@ public class DataManipulator {
         return keys;
     }
 
-    public String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
+    public static String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
         Collections.sort(blocks, new SortBlocks());
         String fileString = "";
 
         for(FileBlock block : blocks) {
-            final byte[] blockData = block.getData();
-	    byte[] decryptedData;
+            final String blockData = block.getData();
+	    String decryptedData;
 
             try {
-                decryptedData = cryptoBlock.decrypt(blockData, secretKey);
+                decryptedData = CryptoBlock.decrypt(blockData, secretKey);
             } catch (Exception e) {
 		throw new EncryptionError("Could not decrypt your file");
             }
 
-            fileString += new String(decryptedData);
+            fileString += decryptedData;
         }
 
         return fileString;
     }
 
-    public List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
+    public static List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
         final List<FileBlock> blocks = new ArrayList<>();
 
-        final List<byte[]> splitFiles = DataManipulator.breakFile(file);
+        final List<String> splitFiles = breakFile(file);
         final int numBlocks = splitFiles.size();
-        final List<Long> blockOrders = DataManipulator.getBlockOrderValues(numBlocks);
+        final List<Long> blockOrders = getBlockOrderValues(numBlocks);
 
-        final Iterator<byte[]> it1 = splitFiles.iterator();
+        final Iterator<String> it1 = splitFiles.iterator();
         final Iterator<Long> it2 = blockOrders.iterator();
 
         while (it1.hasNext() && it2.hasNext()) {
-            byte[] encrypted = null;
+            String encrypted = null;
             try {
-		encrypted = cryptoBlock.encrypt(it1.next(), secretKey);
+		encrypted = CryptoBlock.encrypt(it1.next(), secretKey);
             } catch (Exception e) {
 		throw new EncryptionError("There has been an error encrypting your files");
             }

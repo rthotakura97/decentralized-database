@@ -19,11 +19,9 @@ import static com.decentralizeddatabase.utils.Constants.*;
 
 public class Reno {
 
-    private final DataManipulator dataManipulator;
     private final FileTable fileTable;
 
-    public Reno() throws EncryptionError {
-	this.dataManipulator = new DataManipulator();
+    public Reno() {
         this.fileTable = new FileTable();
     }
 
@@ -54,27 +52,30 @@ public class Reno {
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
 
         final List<FileBlock> blocks = retrieve(keys);
-        final String file = dataManipulator.makeFile(blocks, secretKey);
+        final String file = DataManipulator.makeFile(blocks, secretKey);
 
         response.setData(file);
     }
 
     public void write(final DecentralizedDBRequest request,
 		      final DecentralizedDBResponse response) throws BadRequest, 
-								     EncryptionError {
+								     EncryptionError,
+								     FileNotFoundError {
         final String file = request.getFile();
         final String filename = request.getFilename();
 	final String user = Validations.validateUser(request.getUser());
 	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-        final List<FileBlock> blocks = dataManipulator.createBlocks(secretKey, file);
+        final List<FileBlock> blocks = DataManipulator.createBlocks(secretKey, file);
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, blocks.size());
 
 	// This will need some looking into when we implement Jailcell
 	// TODO: Design ?, How do we overwrite existing files?
 	if (fileTable.containsFile(user, filename)) {
-	    sendForDelete(keys);
+	    final long fileSize = fileTable.getFile(user, filename).getFileSize();
+	    final List<String> oldKeys = DataManipulator.createKeys(secretKey, filename, user, fileSize);
+	    sendForDelete(oldKeys);
 	}
         sendForWrite(blocks, keys);
 
@@ -99,14 +100,19 @@ public class Reno {
 
     private void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
 	//TODO
+	// break up keys and blocks
+	// send as JSON, list of byte arrays
     }
 
     private void sendForDelete(final List<String> keys) {
 	//TODO
+	// send all keys to every node
     }
 
     private final List<FileBlock> retrieve(final List<String> keys){
 	//TODO
+	// send all keys to every node
+	// compile returned files into a single list
         return null;
     }
 }

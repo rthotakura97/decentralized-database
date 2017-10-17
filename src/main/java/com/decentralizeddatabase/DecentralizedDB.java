@@ -8,7 +8,6 @@ import java.io.IOException;
 
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
-import com.decentralizeddatabase.errors.EncryptionError;
 import com.decentralizeddatabase.utils.Dispatcher;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
@@ -25,7 +24,7 @@ public class DecentralizedDB extends AbstractHandler {
 
     private final Dispatcher dispatcher;
 
-    public DecentralizedDB() throws EncryptionError {
+    public DecentralizedDB() {
 	this.dispatcher = new Dispatcher();
     }
 

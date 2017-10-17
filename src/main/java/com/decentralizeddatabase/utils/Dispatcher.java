@@ -10,7 +10,7 @@ public final class Dispatcher {
 
     private final Reno reno;
 
-    public Dispatcher() throws EncryptionError {
+    public Dispatcher() {
 	this.reno = new Reno();
     }
     
