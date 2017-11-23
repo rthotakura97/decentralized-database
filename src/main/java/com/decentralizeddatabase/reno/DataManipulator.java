@@ -14,7 +14,12 @@ import com.decentralizeddatabase.reno.crypto.Hasher;
 import com.decentralizeddatabase.utils.FileBlock;
 import static com.decentralizeddatabase.utils.Constants.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DataManipulator {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataManipulator.class);
 
     private static List<String> breakFile(final String file) {
         final List<String> fileSegments = new ArrayList<>();

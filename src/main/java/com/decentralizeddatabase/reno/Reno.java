@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.decentralizeddatabase.utils.Constants.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Reno {
 
     private final FileTable fileTable;
+    private static final Logger LOGGER = LoggerFactory.getLogger(Reno.class);
 
     public Reno() {
         this.fileTable = new FileTable();
@@ -27,6 +29,7 @@ public class Reno {
 
     public void listAll(final DecentralizedDBRequest request,
                         final DecentralizedDBResponse response) throws BadRequest {
+        LOGGER.info("Processing listAll");
         final String user = Validations.validateUser(request.getUser());
 
         final Collection<FileData> fileList = fileTable.getFiles(user);
@@ -66,6 +69,7 @@ public class Reno {
         final String user = Validations.validateUser(request.getUser());
         final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
+        LOGGER.info("Processing write request for {}", filename);
 
         final List<FileBlock> blocks = DataManipulator.createBlocks(secretKey, file);
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, blocks.size());
@@ -73,6 +77,7 @@ public class Reno {
         // This will need some looking into when we implement Jailcell
         // TODO: Design ?, How do we overwrite existing files?
         if (fileTable.containsFile(user, filename)) {
+            LOGGER.info("{} already exists, overwriting...", filename);
             final long fileSize = fileTable.getFile(user, filename).getFileSize();
             final List<String> oldKeys = DataManipulator.createKeys(secretKey, filename, user, fileSize);
             sendForDelete(oldKeys);

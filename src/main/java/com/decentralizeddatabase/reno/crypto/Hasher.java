@@ -30,7 +30,7 @@ public class Hasher {
         final String key = Hashing.sha1()
             .hashString(userSecretKey + SALT, Charsets.UTF_8)
             .toString()
-            .substring(0, 17);
+            .substring(0, 16);
 
         return key;
     }

@@ -21,7 +21,7 @@ public class HasherTest {
         return Hashing.sha1()
             .hashString(userSecretKey + SALT, Charsets.UTF_8)
             .toString()
-            .substring(0, 17);
+            .substring(0, 16);
     }
 
     @Test
@@ -37,6 +37,7 @@ public class HasherTest {
         final String expected = hashKey(TEST_SECRET_KEY);
         final String actual = Hasher.createSecretKey(TEST_SECRET_KEY);
 
+        Assert.assertEquals(16, actual.length());
         Assert.assertEquals(expected, actual);
     }
 }

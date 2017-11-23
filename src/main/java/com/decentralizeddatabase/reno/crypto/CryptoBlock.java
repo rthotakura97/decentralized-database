@@ -7,8 +7,12 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CryptoBlock {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CryptoBlock.class);
     private static final String IV = "0987654321123456";
 
     /**
