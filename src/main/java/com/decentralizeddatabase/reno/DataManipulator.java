@@ -24,7 +24,7 @@ public class DataManipulator {
 
         int index = 0;
         while (index < length) {
-	    final String chunk = file.substring(index, Math.min(index + sizeOfSegment, length));
+            final String chunk = file.substring(index, Math.min(index + sizeOfSegment, length));
             fileSegments.add(chunk);
             index += sizeOfSegment;
         }
@@ -52,12 +52,13 @@ public class DataManipulator {
     private static class SortBlocks implements Comparator<FileBlock> {
         @Override
         public int compare(FileBlock o1, FileBlock o2) {
-            if(o1.getBlockOrder() > o2.getBlockOrder())
+            if (o1.getBlockOrder() > o2.getBlockOrder()) {
                 return 1;
-            else if(o1.getBlockOrder() < o2.getBlockOrder())
+            } else if (o1.getBlockOrder() < o2.getBlockOrder()) {
                 return -1;
-            else
+            } else {
                 return 0;
+            }
         }
     }
 
@@ -68,11 +69,12 @@ public class DataManipulator {
      * @param filename  String of filename
      * @param user      String of user (owner) of file
      * @param fileSizeInBlocks  long of how many blocks the file was broken up into
+     * @return          List of keys to file blocks
      */
     public static List<String> createKeys(final String secretKey, final String filename, final String user, final long fileSizeInBlocks) {
         final List<String> keys = new ArrayList<>();
 
-        for (int blockNum  = 0; blockNum < fileSizeInBlocks; blockNum++) {
+        for (long blockNum = 0; blockNum < fileSizeInBlocks; blockNum++) {
             final String key = Hasher.createBlockKey(secretKey, filename, blockNum);
             keys.add(key);
         }
