@@ -1,4 +1,8 @@
 target/
 .idea/
 decentralized-database.iml
-
+logs/
+.settings/
+.vscode/
+.classpath
+.project
