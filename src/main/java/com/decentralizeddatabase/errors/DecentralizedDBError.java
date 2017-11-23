@@ -6,10 +6,10 @@ public class DecentralizedDBError extends Exception {
     protected int errorCode;
 
     public String getMessage() {
-	return this.message;
+        return this.message;
     }
 
     public int getErrorCode() {
-	return this.errorCode;
+        return this.errorCode;
     }
 }

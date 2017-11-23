@@ -6,15 +6,15 @@ public class FileBlock {
     private final String encryptedData;
 
     public FileBlock(final long blockOrder, final String encryptedData) {
-	this.blockOrder = blockOrder;
-	this.encryptedData = encryptedData;
+        this.blockOrder = blockOrder;
+        this.encryptedData = encryptedData;
     }
 
     public long getBlockOrder() {
-	return blockOrder;
+        return blockOrder;
     }
 
     public String getData() {
-	return encryptedData;
+        return encryptedData;
     }
 }

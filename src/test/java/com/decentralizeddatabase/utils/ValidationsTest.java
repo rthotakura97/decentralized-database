@@ -14,41 +14,41 @@ public final class ValidationsTest {
 
     @Test
     public void testValidateUserWithValidUser() throws BadRequest {
-	final String expected = "TESTuser1235";
-	final String actual = Validations.validateUser(expected);
+        final String expected = "TESTuser1235";
+        final String actual = Validations.validateUser(expected);
 
-	Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testValidateUserWithNullUser() throws BadRequest {
-	thrown.expect(BadRequest.class);
-	Validations.validateUser(null);
+        thrown.expect(BadRequest.class);
+        Validations.validateUser(null);
 
-	Assert.fail("No Bad Request was thrown");
+        Assert.fail("No Bad Request was thrown");
     }
 
     @Test
     public void testValidateUserWithInvalidUser() throws BadRequest {
-	thrown.expect(BadRequest.class);
-	Validations.validateUser("!@#%%#   ");
+        thrown.expect(BadRequest.class);
+        Validations.validateUser("!@#%%#   ");
 
-	Assert.fail("No Bad Request was thrown");
+        Assert.fail("No Bad Request was thrown");
     }
 
     @Test
     public void testRawSecretKeyWithValidKey() throws BadRequest {
-	final String expected = "somekey 12#42";
-	final String actual = Validations.validateRawSecretKey(expected);
-	
-	Assert.assertEquals(expected, actual);
+        final String expected = "somekey 12#42";
+        final String actual = Validations.validateRawSecretKey(expected);
+        
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testRawSecretKeyWithInvalidKey() throws BadRequest {
-	thrown.expect(BadRequest.class);
-	Validations.validateRawSecretKey(null);
+        thrown.expect(BadRequest.class);
+        Validations.validateRawSecretKey(null);
 
-	Assert.fail("No Bad Request was thrown");
+        Assert.fail("No Bad Request was thrown");
     }
 }

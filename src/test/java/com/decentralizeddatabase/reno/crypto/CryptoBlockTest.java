@@ -21,9 +21,9 @@ public final class CryptoBlockTest {
     
     private String encryptHelper(final String block, final String key) throws Exception {
         final Key aesKey = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-	final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
+        final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
 
-	final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipher.init(Cipher.ENCRYPT_MODE, aesKey, iv);
 
         final byte[] encrypted = cipher.doFinal(block.getBytes("UTF-8"));
@@ -33,9 +33,9 @@ public final class CryptoBlockTest {
 
     private String decryptHelper(final String block, final String key) throws Exception {
         final Key aesKey = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-	final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
+        final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
 
-	final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipher.init(Cipher.DECRYPT_MODE, aesKey, iv);
 
         final byte[] decrypted = cipher.doFinal(Base64.decodeBase64(block));
@@ -48,35 +48,35 @@ public final class CryptoBlockTest {
 
     @Test
     public void testEncryptWithValidKey() throws Exception {
-	final String expected = encryptHelper(BLOCK, KEY);	
-	final String actual = CryptoBlock.encrypt(BLOCK, KEY);
+        final String expected = encryptHelper(BLOCK, KEY);	
+        final String actual = CryptoBlock.encrypt(BLOCK, KEY);
 
-	Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testEncryptWithInvalidKey() throws Exception {
-	thrown.expect(InvalidKeyException.class);
-	CryptoBlock.encrypt(BLOCK, "invalid");
-	
-	Assert.fail("No InvalidKeyException thrown");
+        thrown.expect(InvalidKeyException.class);
+        CryptoBlock.encrypt(BLOCK, "invalid");
+        
+        Assert.fail("No InvalidKeyException thrown");
     }
 
     @Test
     public void testDecryptWithValidKey() throws Exception {
-	final String encryptedBlock = encryptHelper(BLOCK, KEY);
+        final String encryptedBlock = encryptHelper(BLOCK, KEY);
 
-	final String expected = decryptHelper(encryptedBlock, KEY);
-	final String actual = CryptoBlock.decrypt(encryptedBlock, KEY);
+        final String expected = decryptHelper(encryptedBlock, KEY);
+        final String actual = CryptoBlock.decrypt(encryptedBlock, KEY);
 
-	Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void testDecryptWithInvalidKey() throws Exception {
-	thrown.expect(InvalidKeyException.class);
-	CryptoBlock.decrypt(BLOCK, "invalid");
-	
-	Assert.fail("No InvalidKeyException thrown");
+        thrown.expect(InvalidKeyException.class);
+        CryptoBlock.decrypt(BLOCK, "invalid");
+        
+        Assert.fail("No InvalidKeyException thrown");
     }
 }

@@ -16,9 +16,9 @@ import static com.decentralizeddatabase.utils.Constants.*;
 public class DataManipulator {
 
     private static List<String> breakFile(final String file) {
-	final List<String> fileSegments = new ArrayList<>();
+        final List<String> fileSegments = new ArrayList<>();
 
-	final int length = file.length();
+        final int length = file.length();
         final int sizeOfSegment = (int) Math.ceil(length / NUM_BLOCKS);
 
         int index = 0;
@@ -33,7 +33,7 @@ public class DataManipulator {
 
     private static List<Long> getBlockOrderValues(final int numberOfBlocks) {
         final List<Long> blockOrders = new ArrayList<Long>();
-	long maxLong = Long.MAX_VALUE - 1_000_000_000;
+        long maxLong = Long.MAX_VALUE - 1_000_000_000;
 
         final Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, maxLong);
         blockOrders.add(first);
@@ -77,12 +77,12 @@ public class DataManipulator {
 
         for(FileBlock block : blocks) {
             final String blockData = block.getData();
-	    String decryptedData;
+            String decryptedData;
 
             try {
                 decryptedData = CryptoBlock.decrypt(blockData, secretKey);
             } catch (Exception e) {
-		throw new EncryptionError("Could not decrypt your file");
+                throw new EncryptionError("Could not decrypt your file");
             }
 
             fileString += decryptedData;
@@ -104,9 +104,9 @@ public class DataManipulator {
         while (it1.hasNext() && it2.hasNext()) {
             String encrypted = null;
             try {
-		encrypted = CryptoBlock.encrypt(it1.next(), secretKey);
+                encrypted = CryptoBlock.encrypt(it1.next(), secretKey);
             } catch (Exception e) {
-		throw new EncryptionError("There has been an error encrypting your files");
+                throw new EncryptionError("There has been an error encrypting your files");
             }
             final long blockOrder = it2.next();
 

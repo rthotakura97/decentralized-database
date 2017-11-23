@@ -24,19 +24,19 @@ public class DispatcherTest {
 
     @Before
     public void setup() throws EncryptionError {
-	this.dispatcher = new Dispatcher();
+        this.dispatcher = new Dispatcher();
     }
 
     @Test
     public void testMakeCallWithBadMethod() throws Exception {
-	DecentralizedDBRequest request = new DecentralizedDBRequest("invalid",
-								    TEST_USER,
-								    TEST_SECRET_KEY,
-								    TEST_FILENAME,
-								    TEST_FILE);
-	thrown.expect(BadRequest.class);
-	dispatcher.makeCall(request);
+        DecentralizedDBRequest request = new DecentralizedDBRequest("invalid",
+                                        TEST_USER,
+                                        TEST_SECRET_KEY,
+                                        TEST_FILENAME,
+                                        TEST_FILE);
+        thrown.expect(BadRequest.class);
+        dispatcher.makeCall(request);
 
-	Assert.fail("No BadRequest was thrown");
+        Assert.fail("No BadRequest was thrown");
     }
 }

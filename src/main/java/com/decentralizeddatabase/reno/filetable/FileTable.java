@@ -12,7 +12,7 @@ public class FileTable {
     private final Multimap<String,FileData> fileTable;
 
     public FileTable() {
-	fileTable = MultimapBuilder.hashKeys().hashSetValues().build();
+        fileTable = MultimapBuilder.hashKeys().hashSetValues().build();
     }
 
     /**
@@ -24,16 +24,16 @@ public class FileTable {
      * Duplicates are updated with the new fileSize
      */
     public boolean addFile(final String user, final String filename, final long fileSize) {
-	FileData file;
+        FileData file;
 
-	try {
-	    file = getFile(user, filename);
-	    file.updateFileSize(fileSize);
-	} catch (FileNotFoundError e) {
-	    file = new FileData(filename, fileSize);
-	}
+        try {
+            file = getFile(user, filename);
+            file.updateFileSize(fileSize);
+        } catch (FileNotFoundError e) {
+            file = new FileData(filename, fileSize);
+        }
 
-	return fileTable.put(user, file);
+        return fileTable.put(user, file);
     }
 
     /**
@@ -41,7 +41,7 @@ public class FileTable {
      * @return Collection of FileData that corresponds to the user, returns an empty collection if user does not exist
      */
     public Collection<FileData> getFiles(final String user) {
-	return fileTable.get(user);
+        return fileTable.get(user);
     }
 
     /**
@@ -53,15 +53,15 @@ public class FileTable {
      * Retrieves a singular file
      */
     public FileData getFile(final String user, final String filename) throws FileNotFoundError {
-	final Collection<FileData> files = getFiles(user);
+        final Collection<FileData> files = getFiles(user);
 
-	for (FileData file : files) {
-	    if (filename.equals(file.getFilename())) {
-		return file;
-	    }
-	}
+        for (FileData file : files) {
+            if (filename.equals(file.getFilename())) {
+                return file;
+            }
+        }
 
-	throw new FileNotFoundError(String.format("The file %s was not found", filename));
+        throw new FileNotFoundError(String.format("The file %s was not found", filename));
     }
 
     /**
@@ -70,9 +70,9 @@ public class FileTable {
      * @throws FileNotFoundError if file does not exist for that user
      */
     public boolean removeFile(final String user, final String filename) throws FileNotFoundError {
-	final FileData file = getFile(user, filename);
+        final FileData file = getFile(user, filename);
 
-	return fileTable.remove(user, file);
+        return fileTable.remove(user, file);
     }
 
     /**
@@ -82,7 +82,7 @@ public class FileTable {
      * Removes user and all their files from FileTable
      */
     public boolean removeUser(final String user) {
-	return fileTable.removeAll(user) != null;
+        return fileTable.removeAll(user) != null;
     }
 
     /**
@@ -91,12 +91,12 @@ public class FileTable {
      * @return Boolean if the file exists or not
      */
     public boolean containsFile(final String user, final String filename) {
-	try {
-	    getFile(user, filename);
-	} catch (FileNotFoundError e) {
-	    return false;
-	}
+        try {
+            getFile(user, filename);
+        } catch (FileNotFoundError e) {
+            return false;
+        }
 
-	return true;
+        return true;
     }
 }

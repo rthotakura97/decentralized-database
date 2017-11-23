@@ -6,19 +6,19 @@ public class FileData extends Object {
     private long fileSizeInBlocks;
 
     public FileData(final String filename, final long fileSizeInBlocks) {
-	this.filename = filename;
-	this.fileSizeInBlocks = fileSizeInBlocks;
+        this.filename = filename;
+        this.fileSizeInBlocks = fileSizeInBlocks;
     }
 
     public String getFilename() {
-	return this.filename;
+        return this.filename;
     }
 
     public long getFileSize() {
-	return this.fileSizeInBlocks;
+        return this.fileSizeInBlocks;
     }
 
     public void updateFileSize(final long fileSizeInBlocks) {
-	this.fileSizeInBlocks = fileSizeInBlocks;
+        this.fileSizeInBlocks = fileSizeInBlocks;
     }
 }

@@ -18,9 +18,9 @@ public class CryptoBlock {
      */
     public static String encrypt(final String block, final String key) throws Exception {
         final Key aesKey = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-	final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
+        final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
 
-	final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipher.init(Cipher.ENCRYPT_MODE, aesKey, iv);
 
         final byte[] encrypted = cipher.doFinal(block.getBytes("UTF-8"));
@@ -35,9 +35,9 @@ public class CryptoBlock {
      */
     public static String decrypt(final String block, final String key) throws Exception {
         final Key aesKey = new SecretKeySpec(key.getBytes("UTF-8"), "AES");
-	final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
+        final IvParameterSpec iv = new IvParameterSpec(IV.getBytes("UTF-8"));
 
-	final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
+        final Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
         cipher.init(Cipher.DECRYPT_MODE, aesKey, iv);
 
         final byte[] decrypted = cipher.doFinal(Base64.decodeBase64(block));

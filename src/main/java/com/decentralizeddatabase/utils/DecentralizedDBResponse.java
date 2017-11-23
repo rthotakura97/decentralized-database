@@ -13,39 +13,39 @@ public class DecentralizedDBResponse {
     private List<String> list;
 
     public void setList(final List<String> list) {
-	this.list = list;
+        this.list = list;
     }
 
     public List<String> getList() {
-	return list;
+        return list;
     }
 
     public void setData(final String data) {
-	this.data = data;
+        this.data = data;
     }
 
     public String getData() {
-	return data;
+        return data;
     }
 
     public void setMethod(final String method) {
-	this.method = method;
+        this.method = method;
     }
 
     public String getMethod() {
-	return method;
+        return method;
     }
 
     public JSONObject buildJSON() {
-	final JSONObject ret = new JSONObject();
-	ret.put(METHOD, method);
-	
-	if (list != null) {
-	    ret.put(DATA, list);
-	} else if (data != null) {
-	    ret.put(DATA, new String(data));
-	}
+        final JSONObject ret = new JSONObject();
+        ret.put(METHOD, method);
+        
+        if (list != null) {
+            ret.put(DATA, list);
+        } else if (data != null) {
+            ret.put(DATA, new String(data));
+        }
 
-	return ret;
+        return ret;
     }
 }

@@ -26,7 +26,7 @@ public class Reno {
     }
 
     public void listAll(final DecentralizedDBRequest request,
-			final DecentralizedDBResponse response) throws BadRequest {
+                        final DecentralizedDBResponse response) throws BadRequest {
         final String user = Validations.validateUser(request.getUser());
 
         final Collection<FileData> fileList = fileTable.getFiles(user);
@@ -40,15 +40,15 @@ public class Reno {
     }
 
     public void read(final DecentralizedDBRequest request,
-		     final DecentralizedDBResponse response) throws BadRequest,
-								    EncryptionError, 
-								    FileNotFoundError {
+                     final DecentralizedDBResponse response) throws BadRequest,
+                                                                    EncryptionError, 
+                                                                    FileNotFoundError {
         final String filename = request.getFilename();
-	final String user = Validations.validateUser(request.getUser());
-	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String user = Validations.validateUser(request.getUser());
+        final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+        final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
 
         final List<FileBlock> blocks = retrieve(keys);
@@ -58,61 +58,62 @@ public class Reno {
     }
 
     public void write(final DecentralizedDBRequest request,
-		      final DecentralizedDBResponse response) throws BadRequest, 
-								     EncryptionError,
-								     FileNotFoundError {
+                      final DecentralizedDBResponse response) throws BadRequest, 
+                                                                     EncryptionError,
+                                                                     FileNotFoundError {
         final String file = request.getFile();
         final String filename = request.getFilename();
-	final String user = Validations.validateUser(request.getUser());
-	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String user = Validations.validateUser(request.getUser());
+        final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
         final List<FileBlock> blocks = DataManipulator.createBlocks(secretKey, file);
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, blocks.size());
 
-	// This will need some looking into when we implement Jailcell
-	// TODO: Design ?, How do we overwrite existing files?
-	if (fileTable.containsFile(user, filename)) {
-	    final long fileSize = fileTable.getFile(user, filename).getFileSize();
-	    final List<String> oldKeys = DataManipulator.createKeys(secretKey, filename, user, fileSize);
-	    sendForDelete(oldKeys);
-	}
+        // This will need some looking into when we implement Jailcell
+        // TODO: Design ?, How do we overwrite existing files?
+        if (fileTable.containsFile(user, filename)) {
+            final long fileSize = fileTable.getFile(user, filename).getFileSize();
+            final List<String> oldKeys = DataManipulator.createKeys(secretKey, filename, user, fileSize);
+            sendForDelete(oldKeys);
+        }
         sendForWrite(blocks, keys);
 
-	fileTable.addFile(user, filename, blocks.size());
+        fileTable.addFile(user, filename, blocks.size());
     }
 
     public void delete(final DecentralizedDBRequest request,
-		       final DecentralizedDBResponse response) throws BadRequest, 
-								      FileNotFoundError {
+                       final DecentralizedDBResponse response) throws BadRequest, 
+                                                                      FileNotFoundError {
         final String filename = request.getFilename();
         final String user = Validations.validateUser(request.getUser());
-	final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
+        final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
         final String secretKey = Hasher.createSecretKey(rawSecretKey);
 
-	final long numBlocks = fileTable.getFile(user, filename).getFileSize();
+        final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> blockKeys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
 
         sendForDelete(blockKeys);
 
-	fileTable.removeFile(user, filename);
+        fileTable.removeFile(user, filename);
     }
 
     private void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
-	//TODO
-	// break up keys and blocks
-	// send as JSON, list of byte arrays
+        //TODO
+        // break up keys and blocks
+        // post blocks and keys as JSON
     }
 
     private void sendForDelete(final List<String> keys) {
-	//TODO
-	// send all keys to every node
+        //TODO
+        // send all keys to every node
+        // post keys as JSON
     }
 
-    private final List<FileBlock> retrieve(final List<String> keys){
-	//TODO
-	// send all keys to every node
-	// compile returned files into a single list
+    private List<FileBlock> retrieve(final List<String> keys){
+        //TODO
+        // send all keys to every node
+        // compile returned files into a single list
         return null;
     }
 }
