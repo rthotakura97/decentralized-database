@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.Iterator;
 import java.util.List;
+import java.lang.StringBuilder;
 
 import com.decentralizeddatabase.errors.EncryptionError;
 import com.decentralizeddatabase.reno.crypto.CryptoBlock;
@@ -32,16 +33,16 @@ public class DataManipulator {
     }
 
     private static List<Long> getBlockOrderValues(final int numberOfBlocks) {
-        final List<Long> blockOrders = new ArrayList<Long>();
+        final List<Long> blockOrders = new ArrayList<>();
         long maxLong = Long.MAX_VALUE - 1_000_000_000;
 
         final Long first = ThreadLocalRandom.current().nextLong(Long.MIN_VALUE, maxLong);
         blockOrders.add(first);
 
         for (int i = 1; i < numberOfBlocks; i++) {
-	    maxLong += (Long.MAX_VALUE - maxLong) / 2;
+            maxLong += (Long.MAX_VALUE - maxLong) / 2;
 
-	    final Long blockOrder = ThreadLocalRandom.current().nextLong(blockOrders.get(i-1) + 1, maxLong);
+            final Long blockOrder = ThreadLocalRandom.current().nextLong(blockOrders.get(i-1) + 1, maxLong);
             blockOrders.add(blockOrder);
         }
 
@@ -60,10 +61,18 @@ public class DataManipulator {
         }
     }
 
-    public static List<String> createKeys(final String secretKey, final String filename, final String user, final long fileSize) {
+    /**
+     * This function creates all the keys necessary to retrieve all the file's fileblocks
+     * 
+     * @param secretKey String of secret key used to encrypt and decrypt the file
+     * @param filename  String of filename
+     * @param user      String of user (owner) of file
+     * @param fileSizeInBlocks  long of how many blocks the file was broken up into
+     */
+    public static List<String> createKeys(final String secretKey, final String filename, final String user, final long fileSizeInBlocks) {
         final List<String> keys = new ArrayList<>();
 
-        for (int blockNum  = 0; blockNum < fileSize; blockNum++) {
+        for (int blockNum  = 0; blockNum < fileSizeInBlocks; blockNum++) {
             final String key = Hasher.createBlockKey(secretKey, filename, blockNum);
             keys.add(key);
         }
@@ -71,11 +80,18 @@ public class DataManipulator {
         return keys;
     }
 
+    /**
+     * This function constructs a file from a List of FileBlocks
+     * 
+     * @param blocks    List<FileBlock> that holds all the file data broken up
+     * @param secretKey String of secret key used to encrypt and decrypt
+     * @return          Reconstructed file as a String
+     */
     public static String makeFile(final List<FileBlock> blocks, final String secretKey) throws EncryptionError {
         Collections.sort(blocks, new SortBlocks());
-        String fileString = "";
+        final StringBuilder fileString = new StringBuilder();
 
-        for(FileBlock block : blocks) {
+        for (FileBlock block : blocks) {
             final String blockData = block.getData();
             String decryptedData;
 
@@ -85,12 +101,20 @@ public class DataManipulator {
                 throw new EncryptionError("Could not decrypt your file");
             }
 
-            fileString += decryptedData;
+            fileString.append(decryptedData);
         }
 
-        return fileString;
+        return fileString.toString();
     }
 
+    /**
+     * This function breaks up the file to be saved into a List of FileBlocks. Every FileBlock contains an encrypted chunk
+     * of the file as well as a block order.
+     * 
+     * @param secretKey String that contains secret key used to encrypt and decrypt file
+     * @param file      String of file to actual save
+     * @return          A list of FileBlocks that will be ultimately saved individually 
+     */
     public static List<FileBlock> createBlocks(final String secretKey, final String file) throws EncryptionError {
         final List<FileBlock> blocks = new ArrayList<>();
 
