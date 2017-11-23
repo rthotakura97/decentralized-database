@@ -17,8 +17,13 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import org.json.JSONObject;
 
+import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DecentralizedDB extends AbstractHandler {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecentralizedDB.class);
     private static final int PORT = 8080;
 
     private final Dispatcher dispatcher;
@@ -29,14 +34,17 @@ public class DecentralizedDB extends AbstractHandler {
 
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
 	    throws IOException, ServletException {
+        LOGGER.info("Received package");
         response.setContentType("application/json;charset=utf-8");
         DecentralizedDBResponse renoResponse;
         try {
             renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
         } catch (DecentralizedDBError e) {
+            LOGGER.info("{}", e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
             return;
         } catch (Exception e) {
+            LOGGER.info("Unknown error caught");
             response.sendError(500);
             return;
         }
@@ -45,10 +53,14 @@ public class DecentralizedDB extends AbstractHandler {
 		json.write(response.getWriter());
 
 		response.setStatus(HttpServletResponse.SC_OK);
-		baseRequest.setHandled(true);
+        baseRequest.setHandled(true);
+        LOGGER.info("Request handled");
     }
 
     public static void main(String[] args) throws Exception {
+        // TODO: This only works on my machine. Make this easy to deploy anywhere
+        PropertyConfigurator.configure("/home/tim/code/decentralized-ws/decentralized-database/properties/log4j.properties");
+        LOGGER.info("Booting up server");
         final Server server = new Server(PORT);
         server.setHandler(new DecentralizedDB());
 
