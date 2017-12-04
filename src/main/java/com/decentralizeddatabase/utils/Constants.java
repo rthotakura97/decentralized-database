@@ -15,4 +15,8 @@ public final class Constants {
     public static final String FILE = "file";
 
     public static final double NUM_BLOCKS = 4.0;
+
+    public static final String DATE_PROPERTY = "current.time";
+    public static final String DATE_FORMAT = "yyyy-MM-dd_hhmmss";
+    public static final int PORT = 8080;
 }

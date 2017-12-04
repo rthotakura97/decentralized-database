@@ -5,11 +5,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
 import com.decentralizeddatabase.utils.Dispatcher;
 import com.decentralizeddatabase.utils.DecentralizedDBRequest;
 import com.decentralizeddatabase.utils.DecentralizedDBResponse;
+import static com.decentralizeddatabase.utils.Constants.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -24,7 +27,6 @@ import org.slf4j.LoggerFactory;
 public class DecentralizedDB extends AbstractHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(DecentralizedDB.class);
-    private static final int PORT = 8080;
 
     private final Dispatcher dispatcher;
 
@@ -60,9 +62,12 @@ public class DecentralizedDB extends AbstractHandler {
     }
 
     public static void main(String[] args) throws Exception {
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        System.setProperty(DATE_PROPERTY, simpleDateFormat.format(new Date()));
         // TODO: This only works on my machine. Make this easy to deploy anywhere
         PropertyConfigurator.configure("/home/tim/code/decentralized-ws/decentralized-database/properties/log4j.properties");
         LOGGER.info("Booting up server");
+
         final Server server = new Server(PORT);
         server.setHandler(new DecentralizedDB());
 
