@@ -20,7 +20,6 @@ database that safely and securely encrypts broken up files and stores the pieces
 * Handle HTTP requests with Jetty
 * This service conducts all logic to assemble and break up files and sends them to their corresponding servers
 * RenoService will have it's own table that saves filenames, public keys attributed to file, and file sizes 
-    * Use guava MultiMap
 
 ### Operations
 * Write
