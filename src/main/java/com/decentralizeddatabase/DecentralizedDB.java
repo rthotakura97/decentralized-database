@@ -32,19 +32,21 @@ public class DecentralizedDB extends AbstractHandler {
         this.dispatcher = new Dispatcher();
     }
 
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response)
-	    throws IOException, ServletException {
+    public void handle(String target, 
+                       Request baseRequest, 
+                       HttpServletRequest request, 
+                       HttpServletResponse response) throws IOException, ServletException {
         LOGGER.info("Received package");
         response.setContentType("application/json;charset=utf-8");
         DecentralizedDBResponse renoResponse;
         try {
             renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
         } catch (DecentralizedDBError e) {
-            LOGGER.info("{}", e.getMessage());
+            LOGGER.error("{}", e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
             return;
         } catch (Exception e) {
-            LOGGER.info("Unknown error caught");
+            LOGGER.error("{}", e.getMessage());
             response.sendError(500);
             return;
         }

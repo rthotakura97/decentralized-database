@@ -43,7 +43,7 @@ public class DecentralizedDBResponse {
         if (list != null) {
             ret.put(DATA, list);
         } else if (data != null) {
-            ret.put(DATA, new String(data));
+            ret.put(DATA, data);
         }
 
         return ret;

@@ -7,6 +7,12 @@ public class FileBlock {
     private final long blockOrder;
     private final String encryptedData;
 
+    /**
+     * @param blockOrder 
+     * @param encryptedData
+     * 
+     * Builds a FileBlock using blockOrder and encryptedData
+     */
     public FileBlock(final long blockOrder, final String encryptedData) {
         this.blockOrder = blockOrder;
         this.encryptedData = encryptedData;

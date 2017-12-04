@@ -115,7 +115,7 @@ public class Reno {
         // post keys as JSON
     }
 
-    private List<FileBlock> retrieve(final List<String> keys){
+    private List<FileBlock> retrieve(final List<String> keys) {
         //TODO
         // send all keys to every node
         // compile returned files into a single list
