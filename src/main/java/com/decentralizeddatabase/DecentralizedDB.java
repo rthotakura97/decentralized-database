@@ -65,28 +65,29 @@ public class DecentralizedDB extends AbstractHandler {
     }
 
     private static void setProperties() {
-        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
-        System.setProperty(DATE_PROPERTY, simpleDateFormat.format(new Date()));
-
         InputStream in = null;
         try {
-            final Properties prop = new Properties();
+            final Properties prop = new Properties(System.getProperties());
             in = new FileInputStream("/home/tim/code/decentralized-ws/decentralized-database/properties/sqlaccess.properties");
             prop.load(in);
+            System.setProperties(prop);
         } catch (Exception e) {
-            LOGGER.error("{}", e.getMessage());
+            e.printStackTrace();
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (Exception e) {
-                    LOGGER.error("{}", e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
+
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
+        System.setProperty(DATE_PROPERTY, simpleDateFormat.format(new Date()));
+
         // TODO: This only works on my machine. Make this easy to deploy anywhere
         PropertyConfigurator.configure("/home/tim/code/decentralized-ws/decentralized-database/properties/log4j.properties");
-
     }
 
     public static void main(String[] args) throws Exception {

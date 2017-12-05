@@ -57,8 +57,12 @@ public class Reno {
 
         final long numBlocks = fileTable.getFile(user, filename).getFileSize();
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
-
-        final List<FileBlock> blocks = retrieve(keys);
+        List<FileBlock> blocks = null;
+        try {
+            blocks = retrieve(keys);
+        } catch (Exception e) {
+            LOGGER.error("{}", e.getMessage());
+        }
         final String file = DataManipulator.makeFile(blocks, secretKey);
 
         response.setData(file);
@@ -150,7 +154,7 @@ public class Reno {
         String content = EntityUtils.toString(entity);
 
         JSONObject jsonObj = new JSONObject(content);
-        List<FileBlock> blocks = jsonObj.get("blocks");
+        List<FileBlock> blocks = (List<FileBlock>)(jsonObj.get("blocks"));
 
 
         return null;

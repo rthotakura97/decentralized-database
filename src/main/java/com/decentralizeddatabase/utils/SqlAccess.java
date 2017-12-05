@@ -21,6 +21,7 @@ public class SqlAccess {
         final String dbUrl = System.getProperty("sql.url");
         final String user = System.getProperty("sql.user");
         final String pass = System.getProperty("sql.password");
+        System.out.println((dbUrl + " " + user + " " + pass));
         final Connection conn = DriverManager.getConnection(dbUrl, user, pass);
 
         return conn;
