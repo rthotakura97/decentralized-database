@@ -4,9 +4,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 import com.decentralizeddatabase.errors.DecentralizedDBError;
 import com.decentralizeddatabase.utils.Dispatcher;
@@ -61,11 +64,33 @@ public class DecentralizedDB extends AbstractHandler {
         LOGGER.info("Request handled");
     }
 
-    public static void main(String[] args) throws Exception {
+    private static void setProperties() {
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT);
         System.setProperty(DATE_PROPERTY, simpleDateFormat.format(new Date()));
+
+        InputStream in = null;
+        try {
+            final Properties prop = new Properties();
+            in = new FileInputStream("/home/tim/code/decentralized-ws/decentralized-database/properties/sqlaccess.properties");
+            prop.load(in);
+        } catch (Exception e) {
+            LOGGER.error("{}", e.getMessage());
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (Exception e) {
+                    LOGGER.error("{}", e.getMessage());
+                }
+            }
+        }
         // TODO: This only works on my machine. Make this easy to deploy anywhere
         PropertyConfigurator.configure("/home/tim/code/decentralized-ws/decentralized-database/properties/log4j.properties");
+
+    }
+
+    public static void main(String[] args) throws Exception {
+        setProperties();
         LOGGER.info("Booting up server");
 
         final Server server = new Server(PORT);

@@ -2,12 +2,23 @@ package com.decentralizeddatabase.reno.filetable;
 
 import java.util.Collection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 
 import com.decentralizeddatabase.errors.FileNotFoundError;
+import com.decentralizeddatabase.utils.SqlAccess;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileTable {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileTable.class);
 
     private final Multimap<String,FileData> fileTable;
 
