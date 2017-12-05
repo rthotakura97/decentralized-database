@@ -1,0 +1,4 @@
+{
+    "_comment":"This is only returned on a read POST",
+    "blocks":["list","of","all","blocks in given node"]
+}

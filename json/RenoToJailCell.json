@@ -1,0 +1,6 @@
+{
+    "_comment":"This is what a JSON object to jailcell looks like",
+    "method":"Choice between read, write, or delete",
+    "keys":["list","of","keys"],
+    "blocks":["encrypted","blocks","can be empty if read or delete"]
+}

@@ -1,0 +1,5 @@
+{
+    "_comment":"This is what a JSON object response to the enduser client should look like",
+    "method":"method-type",
+    "data":"either file or a list of filenames"
+}
