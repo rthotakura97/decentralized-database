@@ -6,17 +6,21 @@ import com.decentralizeddatabase.errors.FileNotFoundError;
 import com.decentralizeddatabase.reno.crypto.Hasher;
 import com.decentralizeddatabase.reno.filetable.FileData;
 import com.decentralizeddatabase.reno.filetable.FileTable;
-import com.decentralizeddatabase.utils.DecentralizedDBRequest;
-import com.decentralizeddatabase.utils.DecentralizedDBResponse;
-import com.decentralizeddatabase.utils.FileBlock;
-import com.decentralizeddatabase.utils.Validations;
+import com.decentralizeddatabase.utils.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import jdk.nashorn.internal.parser.JSONParser;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.json.JSONObject;
 
 public class Reno {
 
@@ -104,21 +108,51 @@ public class Reno {
     }
 
     private void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
+
         //TODO
         // break up keys and blocks
         // post blocks and keys as JSON
+
+        JSONObject toPost = new JSONObject();
+        toPost.put("method", "write");
+        toPost.put("keys", keys);
+        toPost.put("blocks", blocks);
+        String jailcellUrl = ""; // TODO: fill in url
+
+        HttpUtility.postToJailcell(toPost, jailcellUrl);
     }
 
     private void sendForDelete(final List<String> keys) {
         //TODO
         // send all keys to every node
         // post keys as JSON
+        // read from sql table to see which jailcells to hit
+
+        JSONObject toPost = new JSONObject();
+        toPost.put("keys", keys);
+        String jailcellUrl = ""; //TODO: fill in url
+
+        HttpUtility.postToJailcell(toPost, jailcellUrl);
     }
 
-    private List<FileBlock> retrieve(final List<String> keys) {
+    private List<FileBlock> retrieve(final List<String> keys) throws IOException {
         //TODO
         // send all keys to every node
         // compile returned files into a single list
+        // read from sql table to see which jailcells to hit
+
+        JSONObject toPost = new JSONObject();
+        toPost.put("keys", keys);
+        String jailcellUrl = ""; //TODO: fill in url
+
+        HttpResponse response = HttpUtility.postToJailcell(toPost, jailcellUrl);
+        HttpEntity entity = response.getEntity();
+        String content = EntityUtils.toString(entity);
+
+        JSONObject jsonObj = new JSONObject(content);
+        List<FileBlock> blocks = jsonObj.get("blocks");
+
+
         return null;
     }
 }
