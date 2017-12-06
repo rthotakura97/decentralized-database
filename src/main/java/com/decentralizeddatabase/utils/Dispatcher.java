@@ -7,15 +7,9 @@ import com.decentralizeddatabase.reno.Reno;
 import static com.decentralizeddatabase.utils.Constants.*;
 
 public final class Dispatcher {
-
-    private final Reno reno;
-
-    public Dispatcher() {
-		this.reno = new Reno();
-    }
     
     //TODO: Have handler asynch do work and return, have followup response set after work is done
-    public DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest, 
+    public static DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest, 
 																						 EncryptionError,
 																						 FileNotFoundError {
 		final String method = request.getMethod();
@@ -25,16 +19,16 @@ public final class Dispatcher {
 
 		switch(method) {
 			case LIST_ALL:
-				reno.listAll(request, response);
+				Reno.listAll(request, response);
 				break;
 			case READ:
-				reno.read(request, response);
+				Reno.read(request, response);
 				break;
 			case WRITE:
-				reno.write(request, response);
+				Reno.write(request, response);
 				break;
 			case DELETE:
-				reno.delete(request, response);
+				Reno.delete(request, response);
 				break;
 			default:
 				throw new BadRequest(String.format("Invalid method '%s' requested", request.getMethod()));

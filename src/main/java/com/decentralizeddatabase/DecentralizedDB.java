@@ -31,12 +31,6 @@ public class DecentralizedDB extends AbstractHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(DecentralizedDB.class);
 
-    private final Dispatcher dispatcher;
-
-    public DecentralizedDB() {
-        this.dispatcher = new Dispatcher();
-    }
-
     public void handle(String target, 
                        Request baseRequest, 
                        HttpServletRequest request, 
@@ -45,7 +39,7 @@ public class DecentralizedDB extends AbstractHandler {
         response.setContentType("application/json;charset=utf-8");
         DecentralizedDBResponse renoResponse;
         try {
-            renoResponse = dispatcher.makeCall(new DecentralizedDBRequest(request));
+            renoResponse = Dispatcher.makeCall(new DecentralizedDBRequest(request));
         } catch (DecentralizedDBError e) {
             LOGGER.error("{}", e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
