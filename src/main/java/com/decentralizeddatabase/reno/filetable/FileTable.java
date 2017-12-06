@@ -1,14 +1,12 @@
 package com.decentralizeddatabase.reno.filetable;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import com.google.common.collect.Multimap;
-import com.google.common.collect.MultimapBuilder;
 
 import com.decentralizeddatabase.errors.FileNotFoundError;
 import com.decentralizeddatabase.utils.SqlAccess;
@@ -20,12 +18,6 @@ public class FileTable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileTable.class);
 
-    private final Multimap<String,FileData> fileTable;
-
-    public FileTable() {
-        fileTable = MultimapBuilder.hashKeys().hashSetValues().build();
-    }
-
     /**
      * @param String user - username of account
      * @param String filename - name of file to add
@@ -34,25 +26,77 @@ public class FileTable {
      *
      * Duplicates are updated with the new fileSize
      */
-    public boolean addFile(final String user, final String filename, final long fileSize) {
-        FileData file;
-
+    public static boolean addFile(final String user, final String filename, final long fileSize) {
+        Connection conn = null;
         try {
-            file = getFile(user, filename);
-            file.updateFileSize(fileSize);
-        } catch (FileNotFoundError e) {
-            file = new FileData(filename, fileSize);
+            // Attempt to update existing file
+            conn = SqlAccess.getConnection();
+            final String update = "update renodata.files set filesize = ? where user = ? AND filename = ?;";
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setLong(1, fileSize);
+            statement.setString(2, user);
+            statement.setString(3, filename);
+            if (statement.executeUpdate() == 1) {
+                return true;
+            }
+
+            // Insert new file
+            final String insert = "insert into renodata.files (filename, filesize, user) values (?, ?, ?);";
+            statement = conn.prepareStatement(insert);
+            statement.setString(1, filename);
+            statement.setLong(2, fileSize);
+            statement.setString(3, user);
+            if (statement.execute()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
+            }
         }
 
-        return fileTable.put(user, file);
+        return false;
     }
 
     /**
      * @param String user - username of account
      * @return Collection of FileData that corresponds to the user, returns an empty collection if user does not exist
      */
-    public Collection<FileData> getFiles(final String user) {
-        return fileTable.get(user);
+    public static Collection<FileData> getFiles(final String user) {
+        Connection conn = null;
+        ResultSet result = null;
+        Collection<FileData> files = new LinkedList<>();
+        try {
+            conn = SqlAccess.getConnection();
+            final String update = "select filename, filesize from renodata.files where user = ?;";
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setString(1, user);
+            result = statement.executeQuery();
+            while (result.next()) {
+                final String filename = result.getString("FILENAME");
+                final long filesize = result.getLong("FILESIZE");
+                files.add(new FileData(filename, filesize));
+            }
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
+            }
+        }
+
+        return files;
     }
 
     /**
@@ -63,12 +107,33 @@ public class FileTable {
      *
      * Retrieves a singular file
      */
-    public FileData getFile(final String user, final String filename) throws FileNotFoundError {
-        final Collection<FileData> files = getFiles(user);
+    public static FileData getFile(final String user, final String filename) throws FileNotFoundError {
+        Connection conn = null;
+        ResultSet result = null;
+        try {
+            conn = SqlAccess.getConnection();
+            final String update = "select filesize from renodata.files where user = ? and filename = ?;";
 
-        for (FileData file : files) {
-            if (filename.equals(file.getFilename())) {
-                return file;
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setString(1, user);
+            statement.setString(2, filename);
+
+            result = statement.executeQuery();
+            if (!result.next()) {
+                throw new FileNotFoundError(String.format("The file %s was not found", filename));
+            }
+            
+            final long filesize = result.getLong("FILESIZE");
+            return new FileData(filename, filesize);
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
             }
         }
 
@@ -80,10 +145,33 @@ public class FileTable {
      * @param String filename
      * @throws FileNotFoundError if file does not exist for that user
      */
-    public boolean removeFile(final String user, final String filename) throws FileNotFoundError {
-        final FileData file = getFile(user, filename);
+    public static boolean removeFile(final String user, final String filename) throws FileNotFoundError {
+        Connection conn = null;
+        try {
+            conn = SqlAccess.getConnection();
+            final String update = "delete from renodata.files where user = ? and filename = ?;";
 
-        return fileTable.remove(user, file);
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setString(1, user);
+            statement.setString(2, filename);
+
+            if (statement.executeUpdate() == 0) {
+                throw new FileNotFoundError(String.format("The file %s was not found", filename));
+            }
+
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
+            }
+        }
+        throw new FileNotFoundError(String.format("The file %s was not found", filename));
     }
 
     /**
@@ -92,8 +180,33 @@ public class FileTable {
      *
      * Removes user and all their files from FileTable
      */
-    public boolean removeUser(final String user) {
-        return fileTable.removeAll(user) != null;
+    public static boolean removeUser(final String user) {
+        Connection conn = null;
+        try {
+            conn = SqlAccess.getConnection();
+            final String update = "delete from renodata.files where user = ?;";
+
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setString(1, user);
+
+            if (statement.executeUpdate() == 0) {
+                return false;
+            }
+
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -101,13 +214,34 @@ public class FileTable {
      * @param String filename
      * @return Boolean if the file exists or not
      */
-    public boolean containsFile(final String user, final String filename) {
+    public static boolean containsFile(final String user, final String filename) {
+        Connection conn = null;
         try {
-            getFile(user, filename);
-        } catch (FileNotFoundError e) {
-            return false;
-        }
+            conn = SqlAccess.getConnection();
+            final String update = "select * from renodata.files where user = ? and filename = ?;";
 
-        return true;
+            PreparedStatement statement = conn.prepareStatement(update);
+            statement.setString(1, user);
+            statement.setString(2, filename);
+
+            final ResultSet result = statement.executeQuery();
+            if (!result.next()) {
+                return false;
+            }
+
+            return true;
+        } catch (SQLException e) {
+            LOGGER.error("{}", e.getStackTrace().toString());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                LOGGER.error("{}", e.getStackTrace().toString());
+            }
+        }
+        return false;
     }
+
 }

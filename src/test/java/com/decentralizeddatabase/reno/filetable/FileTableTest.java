@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,21 +17,26 @@ public final class FileTableTest {
 
     private static final String USER = "TEST_USER";
     private static final List<String> FILES = Arrays.asList("file0.file",
-							    "file1.file");
+                                                            "file1.file");
     private static final long FILE_SIZE = 10000;
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    private FileTable fileTable;
-    
     @Before
     public void setup() {
-		fileTable = new FileTable();
+        System.setProperty("sql.user", "reno");
+        System.setProperty("sql.password", "mangietangie");
+        System.setProperty("sql.url", "jdbc:mysql://localhost?useSSL=false");
+    }
+    
+    @After
+    public void cleanup() {
+        FileTable.removeUser(USER);
     }
 
     private void addFileHelper(final String user, final String filename, final long fileSize) {
-		fileTable.addFile(user, filename, fileSize);
+		FileTable.addFile(user, filename, fileSize);
     }
 
     @Test
@@ -38,7 +44,7 @@ public final class FileTableTest {
 		addFileHelper(USER, FILES.get(0), FILE_SIZE);
 		addFileHelper(USER, FILES.get(1), FILE_SIZE);
 
-		final Collection<FileData> actual = fileTable.getFiles(USER);
+		final Collection<FileData> actual = FileTable.getFiles(USER);
 		
 		Assert.assertEquals(2, actual.size());
 
@@ -52,7 +58,7 @@ public final class FileTableTest {
 		addFileHelper(USER, FILES.get(0), FILE_SIZE);
 		addFileHelper(USER, FILES.get(0), FILE_SIZE + 5);
 
-		final Collection<FileData> actual = fileTable.getFiles(USER);
+		final Collection<FileData> actual = FileTable.getFiles(USER);
 		
 		Assert.assertEquals(1, actual.size());
 		for (FileData file : actual) {
@@ -63,7 +69,7 @@ public final class FileTableTest {
 
     @Test
     public void testGetFilesWithNoFiles() {
-		final Collection<FileData> actual = fileTable.getFiles("invalid");
+		final Collection<FileData> actual = FileTable.getFiles("invalid");
 
 		Assert.assertEquals(0, actual.size());
     }
@@ -72,7 +78,7 @@ public final class FileTableTest {
     public void testGetFile() throws FileNotFoundError {
 		addFileHelper(USER, FILES.get(0), FILE_SIZE);
 
-		final FileData actual = fileTable.getFile(USER, FILES.get(0));
+		final FileData actual = FileTable.getFile(USER, FILES.get(0));
 
 		Assert.assertEquals(FILES.get(0), actual.getFilename());
 		Assert.assertEquals(FILE_SIZE, actual.getFileSize());
@@ -81,7 +87,7 @@ public final class FileTableTest {
     @Test
     public void testGetNonExistantFile() throws FileNotFoundError {
 		thrown.expect(FileNotFoundError.class);
-		final FileData actual = fileTable.getFile(USER, FILES.get(0));
+		FileTable.getFile(USER, FILES.get(0));
 
 		Assert.fail("No file should have been found");
     }
@@ -90,11 +96,11 @@ public final class FileTableTest {
     public void testRemoveFile() throws FileNotFoundError {
 		addFileHelper(USER, FILES.get(0), FILE_SIZE);
 
-		final boolean removed = fileTable.removeFile(USER, FILES.get(0));		
+		final boolean removed = FileTable.removeFile(USER, FILES.get(0));		
 		Assert.assertTrue(removed);
 
 		thrown.expect(FileNotFoundError.class);
-		fileTable.getFile(USER, FILES.get(0));
+		FileTable.getFile(USER, FILES.get(0));
 
 		Assert.fail("File still in file table");
     }
@@ -102,7 +108,7 @@ public final class FileTableTest {
     @Test
     public void testRemoveNonExistantFile() throws FileNotFoundError {
 		thrown.expect(FileNotFoundError.class);
-		fileTable.removeFile(USER, FILES.get(0));
+		FileTable.removeFile(USER, FILES.get(0));
 
 		Assert.fail("FileNotFoundError not thrown");
     }
@@ -112,10 +118,10 @@ public final class FileTableTest {
 		addFileHelper(USER, FILES.get(0), FILE_SIZE);
 		addFileHelper(USER, FILES.get(1), FILE_SIZE);
 		
-		final boolean removed = fileTable.removeUser(USER);
+		final boolean removed = FileTable.removeUser(USER);
 		Assert.assertTrue(removed);
 
-		final Collection<FileData> actual = fileTable.getFiles(USER);
+		final Collection<FileData> actual = FileTable.getFiles(USER);
 		Assert.assertEquals(0, actual.size());
     }
 }
