@@ -13,10 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import jdk.nashorn.internal.parser.JSONParser;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,8 +49,7 @@ public class Reno {
 
         final long numBlocks = FileTable.getFile(user, filename).getFileSize();
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
-        List<FileBlock> blocks = null;
-        blocks = retrieve(keys);
+        List<FileBlock> blocks = retrieve(keys);
         final String file = DataManipulator.makeFile(blocks, secretKey);
 
         response.setData(file);
@@ -75,8 +70,6 @@ public class Reno {
         final List<FileBlock> blocks = DataManipulator.createBlocks(secretKey, file);
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, blocks.size());
 
-        // This will need some looking into when we implement Jailcell
-        // TODO: Design ?, How do we overwrite existing files?
         if (FileTable.containsFile(user, filename)) {
             LOGGER.info("{} already exists, overwriting...", filename);
             final long fileSize = FileTable.getFile(user, filename).getFileSize();
@@ -105,6 +98,8 @@ public class Reno {
         FileTable.removeFile(user, filename);
     }
 
+    //Refactor and break up after confirmed working
+    //TODO: Magic numbers (strings??)
     private static void sendForWrite(final List<FileBlock> blocks, final List<String> keys) throws JailCellServerError {
         final List<JailCellInfo> jailCells = JailCellAccess.getJailCells();
         final int numCells = jailCells.size();
@@ -140,24 +135,40 @@ public class Reno {
     }
 
     private static void sendForDelete(final List<String> keys) throws JailCellServerError {
-        final JSONObject toPost = new JSONObject();
-        toPost.put("method", "delete");
-        toPost.put("keys", keys);
-        String jailcellUrl = ""; //TODO: fill in url
+        final List<JailCellInfo> jailCells = JailCellAccess.getJailCells();
 
-        HttpUtility.postToJailCell(toPost, jailcellUrl);
+        //Thread this
+        for (JailCellInfo jailCell : jailCells) {
+            final String jailCellUrl = jailCell.url;
+            final JSONObject toPost = new JSONObject();
+            toPost.put("method", "delete");
+            toPost.put("keys", keys);
+
+            HttpUtility.postToJailCell(toPost, jailCellUrl);
+        }
     }
 
     private static List<FileBlock> retrieve(final List<String> keys) throws JailCellServerError {
-        JSONObject toPost = new JSONObject();
-        toPost.put("method", "read");
-        toPost.put("keys", keys);
-        String jailcellUrl = ""; //TODO: fill in url
+        final List<JailCellInfo> jailCells = JailCellAccess.getJailCells();
+        final List<String> encodedFileStrings = new ArrayList<>();//Needs to be threadsafe
 
-        JSONObject jsonObj = HttpUtility.postToJailCellWithResponse(toPost, jailcellUrl);
-        
-        List<FileBlock> blocks = (List<FileBlock>)(jsonObj.get("blocks"));
+        //Thread this
+        for (JailCellInfo jailCell : jailCells) {
+            final String jailCellUrl = jailCell.url;
+            JSONObject toPost = new JSONObject();
+            toPost.put("method", "read");
+            toPost.put("keys", keys);
+            JSONObject jsonObj = HttpUtility.postToJailCellWithResponse(toPost, jailCellUrl);
+            List<String> blocks = (List<String>)(jsonObj.get("blocks"));
+            encodedFileStrings.addAll(blocks);
+        }
 
-        return null;
+        //TODO: Streams?
+        final List<FileBlock> fileBlocks = new ArrayList<>();
+        for (String encodedString : encodedFileStrings) {
+            fileBlocks.add(new FileBlock(encodedString));
+        }
+
+        return fileBlocks;
     }
 }
