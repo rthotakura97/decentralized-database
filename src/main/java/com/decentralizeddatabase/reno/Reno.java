@@ -1,17 +1,17 @@
 package com.decentralizeddatabase.reno;
 
-import com.decentralizeddatabase.errors.BadRequest;
-import com.decentralizeddatabase.errors.EncryptionError;
-import com.decentralizeddatabase.errors.FileNotFoundError;
+import com.decentralizeddatabase.errors.*;
 import com.decentralizeddatabase.reno.crypto.Hasher;
-import com.decentralizeddatabase.reno.filetable.FileData;
-import com.decentralizeddatabase.reno.filetable.FileTable;
+import com.decentralizeddatabase.reno.filetable.*;
+import com.decentralizeddatabase.reno.jailcellaccess.*;
 import com.decentralizeddatabase.utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import jdk.nashorn.internal.parser.JSONParser;
 import org.apache.http.HttpEntity;
@@ -44,7 +44,8 @@ public class Reno {
     public static void read(final DecentralizedDBRequest request,
                      final DecentralizedDBResponse response) throws BadRequest,
                                                                     EncryptionError, 
-                                                                    FileNotFoundError {
+                                                                    FileNotFoundError,
+                                                                    JailCellServerError {
         final String filename = request.getFilename();
         final String user = Validations.validateUser(request.getUser());
         final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
@@ -53,11 +54,7 @@ public class Reno {
         final long numBlocks = FileTable.getFile(user, filename).getFileSize();
         final List<String> keys = DataManipulator.createKeys(secretKey, filename, user, numBlocks);
         List<FileBlock> blocks = null;
-        try {
-            blocks = retrieve(keys);
-        } catch (Exception e) {
-            LOGGER.error("{}", e.getMessage());
-        }
+        blocks = retrieve(keys);
         final String file = DataManipulator.makeFile(blocks, secretKey);
 
         response.setData(file);
@@ -66,7 +63,8 @@ public class Reno {
     public static void write(final DecentralizedDBRequest request,
                       final DecentralizedDBResponse response) throws BadRequest, 
                                                                      EncryptionError,
-                                                                     FileNotFoundError {
+                                                                     FileNotFoundError,
+                                                                     JailCellServerError {
         final String file = request.getFile();
         final String filename = request.getFilename();
         final String user = Validations.validateUser(request.getUser());
@@ -91,8 +89,9 @@ public class Reno {
     }
 
     public static void delete(final DecentralizedDBRequest request,
-                       final DecentralizedDBResponse response) throws BadRequest, 
-                                                                      FileNotFoundError {
+                              final DecentralizedDBResponse response) throws BadRequest, 
+                                                                             FileNotFoundError,
+                                                                             JailCellServerError {
         final String filename = request.getFilename();
         final String user = Validations.validateUser(request.getUser());
         final String rawSecretKey = Validations.validateRawSecretKey(request.getSecretKey());
@@ -106,51 +105,58 @@ public class Reno {
         FileTable.removeFile(user, filename);
     }
 
-    private static void sendForWrite(final List<FileBlock> blocks, final List<String> keys) {
+    private static void sendForWrite(final List<FileBlock> blocks, final List<String> keys) throws JailCellServerError {
+        final List<JailCellInfo> jailCells = JailCellAccess.getJailCells();
+        final int numCells = jailCells.size();
+        final List<List<String>> brokenUpBlocks = new ArrayList<>(Collections.nCopies(numCells, new ArrayList<>()));
 
-        //TODO
-        // break up keys and blocks
-        // post blocks and keys as JSON
+        int keyIdx = 0;
+        final List<List<String>> brokenUpKeys = new ArrayList<>(Collections.nCopies(numCells, new ArrayList<>()));
 
-        JSONObject toPost = new JSONObject();
-        toPost.put("method", "write");
-        toPost.put("keys", keys);
-        toPost.put("blocks", blocks);
-        String jailcellUrl = ""; // TODO: fill in url
+        final Random rnd = new Random();//todo set seed?
+        
+        for (FileBlock block : blocks) {
+            final String encoded = block.encodeOrderIntoBlock();
+            final String currKey = keys.get(keyIdx++);
+            final int idx = rnd.nextInt(numCells);
 
-        HttpUtility.postToJailcell(toPost, jailcellUrl);
+            brokenUpBlocks.get(idx).add(encoded);
+            brokenUpKeys.get(idx).add(currKey);
+        }
+
+        //TODO: Thread this
+        for (int i = 0; i < numCells; i++) {
+            final String jailCellUrl = jailCells.get(i).url;
+            final List<String> currKeys = brokenUpKeys.get(i);
+            final List<String> currBlocks = brokenUpBlocks.get(i);
+
+            final JSONObject toPost = new JSONObject();
+            toPost.put("method", "write");
+            toPost.put("keys", currKeys);
+            toPost.put("blocks", currBlocks);
+
+            HttpUtility.postToJailCell(toPost, jailCellUrl);
+        }
     }
 
-    private static void sendForDelete(final List<String> keys) {
-        //TODO
-        // send all keys to every node
-        // post keys as JSON
-        // read from sql table to see which jailcells to hit
-
-        JSONObject toPost = new JSONObject();
+    private static void sendForDelete(final List<String> keys) throws JailCellServerError {
+        final JSONObject toPost = new JSONObject();
+        toPost.put("method", "delete");
         toPost.put("keys", keys);
         String jailcellUrl = ""; //TODO: fill in url
 
-        HttpUtility.postToJailcell(toPost, jailcellUrl);
+        HttpUtility.postToJailCell(toPost, jailcellUrl);
     }
 
-    private static List<FileBlock> retrieve(final List<String> keys) throws IOException {
-        //TODO
-        // send all keys to every node
-        // compile returned files into a single list
-        // read from sql table to see which jailcells to hit
-
+    private static List<FileBlock> retrieve(final List<String> keys) throws JailCellServerError {
         JSONObject toPost = new JSONObject();
+        toPost.put("method", "read");
         toPost.put("keys", keys);
         String jailcellUrl = ""; //TODO: fill in url
 
-        HttpResponse response = HttpUtility.postToJailcell(toPost, jailcellUrl);
-        HttpEntity entity = response.getEntity();
-        String content = EntityUtils.toString(entity);
-
-        JSONObject jsonObj = new JSONObject(content);
+        JSONObject jsonObj = HttpUtility.postToJailCellWithResponse(toPost, jailcellUrl);
+        
         List<FileBlock> blocks = (List<FileBlock>)(jsonObj.get("blocks"));
-
 
         return null;
     }
