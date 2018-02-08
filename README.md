@@ -1,16 +1,16 @@
-# decentralized-database
+# distributed-database
 
 ## Abstract
 In today's world we are using more and more data at levels we couldn't predict 15 years ago.
 This comes with the need to find better solutions to save our data safely, securely, and efficiently.
-This project will help us learn new solutions to solve this greater problem. We are proposing a decentralized
+This project will help us learn new solutions to solve this greater problem. We are proposing a distributed 
 database that safely and securely encrypts broken up files and stores the pieces on different servers. 
 
 ## Front End High Level
 * User can see a list of all their files saved on our database
 * User can write, read, and delete files
     * No text editing capabilities in our service
-* Just make CLI tools for now [python client](https://github.com/tdh911/decentralizeddb-python-client)
+* Just make CLI tools for now [python client](https://github.com/tdh911/distributeddb-python-client)
     * Looking to expand to user interface in future
     * python2 requests library to send http requests
 * Takes in public key, secret key, path/to/file
