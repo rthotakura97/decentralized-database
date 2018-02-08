@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.json.JSONObject;
 
-public class DecentralizedDBResponse {
+public class DistributedDBResponse {
     
     private String method;
     private String data;

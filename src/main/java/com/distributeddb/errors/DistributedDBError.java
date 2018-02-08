@@ -1,6 +1,6 @@
 package com.distributeddb.errors;
 
-public class DecentralizedDBError extends Exception {
+public class DistributedDBError extends Exception {
     
     protected String message;
     protected int errorCode;

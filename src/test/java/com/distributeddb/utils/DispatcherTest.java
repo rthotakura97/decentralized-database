@@ -29,7 +29,7 @@ public class DispatcherTest {
 
     @Test
     public void testMakeCallWithBadMethod() throws Exception {
-        DecentralizedDBRequest request = new DecentralizedDBRequest("invalid",
+        DistributedDBRequest request = new DistributedDBRequest("invalid",
                                         TEST_USER,
                                         TEST_SECRET_KEY,
                                         TEST_FILENAME,

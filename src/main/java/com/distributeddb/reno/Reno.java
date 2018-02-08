@@ -22,8 +22,8 @@ public class Reno {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Reno.class);
 
-    public static void listAll(final DecentralizedDBRequest request,
-                        final DecentralizedDBResponse response) throws BadRequest {
+    public static void listAll(final DistributedDBRequest request,
+                               final DistributedDBResponse response) throws BadRequest {
         LOGGER.info("Processing listAll");
         final String user = Validations.validateUser(request.getUser());
 
@@ -37,8 +37,8 @@ public class Reno {
         response.setList(filenames);
     }
 
-    public static void read(final DecentralizedDBRequest request,
-                     final DecentralizedDBResponse response) throws BadRequest,
+    public static void read(final DistributedDBRequest request,
+                            final DistributedDBResponse response) throws BadRequest,
                                                                     EncryptionError, 
                                                                     FileNotFoundError,
                                                                     JailCellServerError {
@@ -55,8 +55,8 @@ public class Reno {
         response.setData(file);
     }
 
-    public static void write(final DecentralizedDBRequest request,
-                      final DecentralizedDBResponse response) throws BadRequest, 
+    public static void write(final DistributedDBRequest request,
+                             final DistributedDBResponse response) throws BadRequest, 
                                                                      EncryptionError,
                                                                      FileNotFoundError,
                                                                      JailCellServerError {
@@ -81,8 +81,8 @@ public class Reno {
         FileTable.addFile(user, filename, blocks.size());
     }
 
-    public static void delete(final DecentralizedDBRequest request,
-                              final DecentralizedDBResponse response) throws BadRequest, 
+    public static void delete(final DistributedDBRequest request,
+                              final DistributedDBResponse response) throws BadRequest, 
                                                                              FileNotFoundError,
                                                                              JailCellServerError {
         final String filename = request.getFilename();

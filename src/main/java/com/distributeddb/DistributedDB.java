@@ -11,10 +11,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-import com.distributeddb.errors.DecentralizedDBError;
+import com.distributeddb.errors.DistributedDBError;
 import com.distributeddb.utils.Dispatcher;
-import com.distributeddb.utils.DecentralizedDBRequest;
-import com.distributeddb.utils.DecentralizedDBResponse;
+import com.distributeddb.utils.DistributedDBRequest;
+import com.distributeddb.utils.DistributedDBResponse;
 import static com.distributeddb.utils.Constants.*;
 
 import org.eclipse.jetty.server.Server;
@@ -37,10 +37,10 @@ public class DistributedDB extends AbstractHandler {
                        HttpServletResponse response) throws IOException, ServletException {
         LOGGER.info("Received package");
         response.setContentType("application/json;charset=utf-8");
-        DecentralizedDBResponse renoResponse;
+        DistributedDBResponse renoResponse;
         try {
-            renoResponse = Dispatcher.makeCall(new DecentralizedDBRequest(request));
-        } catch (DecentralizedDBError e) {
+            renoResponse = Dispatcher.makeCall(new DistributedDBRequest(request));
+        } catch (DistributedDBError e) {
             LOGGER.error("{}", e.getMessage());
             response.sendError(e.getErrorCode(), e.getMessage());
             return;

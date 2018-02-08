@@ -6,7 +6,7 @@ import com.google.common.annotations.VisibleForTesting;
 
 import static com.distributeddb.utils.Constants.*;
 
-public class DecentralizedDBRequest {
+public class DistributedDBRequest {
 
     private final String method;
     private final String user;
@@ -14,7 +14,7 @@ public class DecentralizedDBRequest {
     private final String filename;
     private final String file;
 
-    public DecentralizedDBRequest(final HttpServletRequest request) {
+    public DistributedDBRequest(final HttpServletRequest request) {
         this.method = request.getParameter(METHOD);
         this.user = request.getParameter(USER);
         this.secretKey = request.getParameter(SECRET);
@@ -23,7 +23,7 @@ public class DecentralizedDBRequest {
     }
 
     @VisibleForTesting
-    DecentralizedDBRequest(final String method,
+    DistributedDBRequest(final String method,
                            final String user,
                            final String secretKey,
                            final String filename,

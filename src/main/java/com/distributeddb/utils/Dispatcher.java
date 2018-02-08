@@ -10,13 +10,13 @@ import static com.distributeddb.utils.Constants.*;
 public final class Dispatcher {
     
     //TODO: Have handler asynch do work and return, have followup response set after work is done
-    public static DecentralizedDBResponse makeCall(final DecentralizedDBRequest request) throws BadRequest, 
+    public static DistributedDBResponse makeCall(final DistributedDBRequest request) throws BadRequest, 
                                                                                                 EncryptionError,
                                                                                                 FileNotFoundError,
                                                                                                 JailCellServerError {
 		final String method = request.getMethod();
 
-		DecentralizedDBResponse response = new DecentralizedDBResponse();
+		DistributedDBResponse response = new DistributedDBResponse();
 		response.setMethod(method);
 
 		switch(method) {

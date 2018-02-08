@@ -1,6 +1,6 @@
 package com.distributeddb.errors;
 
-public final class BadRequest extends DecentralizedDBError {
+public final class BadRequest extends DistributedDBError {
 
     public BadRequest(final String message) {
         this.errorCode = 400;
